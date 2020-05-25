@@ -1,0 +1,19 @@
+{
+  "name": "brython-runner",
+  "version": "1.0.0",
+  "description": "Brython based Python code runner for web clients.",
+  "main": "index.js",
+  "scripts": {
+    "build": "steal-tools",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jeongmin Byun",
+  "license": "MIT",
+  "devDependencies": {
+    "steal": "^2.2.4",
+    "steal-tools": "^2.2.6"
+  },
+  "steal": {
+
+  }
+}
