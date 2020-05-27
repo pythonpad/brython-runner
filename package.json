@@ -4,16 +4,16 @@
   "description": "Brython based Python code runner for web clients.",
   "main": "index.js",
   "scripts": {
+    "dev": "http-server",
     "build": "steal-tools",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Jeongmin Byun",
   "license": "MIT",
   "devDependencies": {
+    "http-server": "^0.12.3",
     "steal": "^2.2.4",
     "steal-tools": "^2.2.6"
   },
-  "steal": {
-
-  }
+  "steal": {}
 }
