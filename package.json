@@ -4,17 +4,24 @@
   "description": "Brython based Python code runner for web clients.",
   "main": "index.js",
   "scripts": {
-    "dev": "http-server",
-    "build": "steal-tools",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "./node_modules/.bin/gulp dev",
+    "build": "./node_modules/.bin/gulp build"
   },
   "author": "Jeongmin Byun",
   "license": "MIT",
   "devDependencies": {
+    "3": "^2.1.0",
+    "@babel/cli": "^7.10.1",
+    "@babel/core": "^7.10.2",
+    "@babel/plugin-proposal-class-properties": "^7.10.1",
+    "@babel/preset-env": "^7.10.2",
+    "babel-loader": "^8.1.0",
+    "babel-polyfill": "^6.26.0",
     "codemirror": "^5.54.0",
-    "http-server": "^0.12.3",
-    "steal": "^2.2.4",
-    "steal-tools": "^2.2.6"
-  },
-  "steal": {}
+    "gulp": "4.x.x",
+    "gulp-babel": "^8.0.0",
+    "webpack": "^4.43.0",
+    "webpack-dev-server": "^3.11.0",
+    "yargs": "^15.3.1"
+  }
 }
