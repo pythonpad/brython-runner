@@ -56,7 +56,7 @@
             value: code,
         })
         editor.on('change', (editor, change) => {
-            localStorage.setItem(codeStoreKey, )
+            localStorage.setItem(codeStoreKey, editor.getDoc().getValue())
         })
         const runner = new BrythonRunner({
             brythonUrl: '/brython',
