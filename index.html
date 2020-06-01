@@ -1,9 +1,75 @@
 <!doctype html>
 <html>
-
+<head>
+    <script src="node_modules/codemirror/lib/codemirror.js"></script>
+    <link rel="stylesheet" href="node_modules/codemirror/lib/codemirror.css">
+    <link rel="stylesheet" href="node_modules/codemirror/theme/ayu-mirage.css">
+    <script src="node_modules/codemirror/mode/python/python.js"></script>
+    <script src="node_modules/codemirror/keymap/sublime.js"></script>
+    <link rel="stylesheet" type="text/css" href="index.css">
+</head>
 <body>
+    <div class="dev-box">
+        <div class="toolbar-row">
+            <button class="toolbar-button" onclick="run()">
+                Run
+            </button>
+        </div>
+        <div class="workspace-row">
+            <div class="editor-column">
+                <div class="editor" id="editor"></div>
+            </div>
+            <div class="run-column">
+
+            </div>
+        </div>
+    </div>
     <script src="./node_modules/steal/steal.js" main></script>
     <!-- <script src="./dist/steal.production.js"></script> -->
-</body>
-
+    <script>
+        // Initialize the code editor.
+        const CODEMIRROR_OPTIONS = {
+            lineNumbers: true,
+            lineSeparator: '\n',
+            mode: undefined,
+            theme: 'ayu-mirage',
+            fontSize: 14,
+            indentUnit: 4,
+            tabSize: 4,
+            indentWithTabs: false,
+            lineWrapping: true,
+            readOnly: false,
+            smartIndent: true,
+            matchBrackets: true,
+            autoCloseBrackets: true,
+            showTrailingSpace: true,
+            keyMap: 'sublime',
+            extraKeys: null,
+            showInvisibles: true,
+            viewportMargin: Infinity,
+        }
+        const codeStoreKey = 'brython-runner-dev-code'
+        const loadedCode = localStorage.getItem(codeStoreKey)
+        const code = loadedCode || ''
+        const editor = CodeMirror(document.getElementById('editor'), {
+            ...CODEMIRROR_OPTIONS,
+            mode: 'python',
+            value: code,
+        })
+        editor.on('change', (editor, change) => {
+            localStorage.setItem(codeStoreKey, )
+        })
+        const runner = new BrythonRunner({
+            brythonUrl: '/brython',
+        })
+        function getCode() {
+            return editor.getDoc().getValue();
+        }
+        function run() {
+            const code = getCode();
+            runner.runCode(code);
+        }
+        
+    </script>
+    </body>
 </html>
