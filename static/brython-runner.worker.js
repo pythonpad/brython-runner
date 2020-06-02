@@ -33,7 +33,7 @@ function init(data) {
             self.staticUrl + '/brython',
             self.staticUrl + '/brython/site-packages',
         ],
-        debug: 1, // 10
+        debug: 10, // 1
     })
     // self.__BRYTHON__._run_script({
     //     name: '__main__',
@@ -41,20 +41,20 @@ function init(data) {
     // })
 }
 
-function run(data) {
-    console.log(self.__BRYTHON__)
-    const code = self.__BRYTHON__._run_script({
-        name: data.name || '__main__',
-        src: data.src,
-    })
-    postMessage({
-        type: 'done',
-        value: code,
-    })
-}
+// function run(data) {
+//     console.log(self.__BRYTHON__)
+//     const code = self.__BRYTHON__.run_script({
+//         name: data.name || '__main__',
+//         src: data.src,
+//     })
+//     postMessage({
+//         type: 'done',
+//         value: code,
+//     })
+// }
 
 function runCode(code) {
-    const exitCode = self.__BRYTHON__._run_script({
+    const exitCode = self.__BRYTHON__.run_script({
         name: '__main__',
         src: code,
     })
