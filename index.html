@@ -21,7 +21,9 @@
                 <div class="editor" id="editor"></div>
             </div>
             <div class="run-column">
+                <div class="output-box" id="output">
 
+                </div>
             </div>
         </div>
     </div>
@@ -59,12 +61,35 @@
             localStorage.setItem(codeStoreKey, editor.getDoc().getValue())
         })
         const runner = new BrythonRunner({
-            brythonUrl: '/brython',
+            staticUrl: '/static',
+            stdout: {
+                write(content) {
+                    var el = document.createElement('code');
+                    var text = document.createTextNode(content);
+                    el.appendChild(text)
+                    document.getElementById('output').appendChild(el);  
+                },
+                flush() {}
+            },
+            stderr: {
+                write(content) {
+                    var el = document.createElement('code');
+                    var text = document.createTextNode(content);
+                    el.appendChild(text)
+                    el.setAttribute('class', 'error')
+                    document.getElementById('output').appendChild(el);
+                },
+                flush() { }
+            },
         })
+        function clearOutput() {
+            document.getElementById('output').innerHTML = ''
+        }
         function getCode() {
             return editor.getDoc().getValue();
         }
         function run() {
+            clearOutput()
             const code = getCode();
             runner.runCode(code);
         }

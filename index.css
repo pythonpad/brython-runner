@@ -57,4 +57,20 @@
     height: 100%;
     background-color: #222;
     color: #fff;
+    overflow-y: auto;
+}
+
+.output-box {
+    padding: 1rem;
+    font-size: 1rem;
+}
+
+.output-box code {
+    display: inline;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.output-box code.error {
+    color: red;
 }

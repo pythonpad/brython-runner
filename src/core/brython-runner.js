@@ -37,14 +37,25 @@ export default class BrythonRunner {
     }
 
     handleMessage(msg) {
-        console.log('brython message', msg)
+        // console.log('brython message', msg)
         switch (msg.data.type) {
             case 'done':
                 this.done(msg.data.exit)
-                break;
+                break
+
+            case 'stdout':
+                console.log(this)
+                this.stdout.write(msg.data.value)
+                this.stdout.flush()
+                break
+
+            case 'stderr':
+                this.stderr.write(msg.data.value)
+                this.stderr.flush()
+                break
 
             default:
-                break;
+                break
         }
     }
 

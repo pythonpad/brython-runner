@@ -1,5 +1,16 @@
 function init(data) {
     self.window = self
+    self.code = ''
+    self.document = {
+        getElementsByTagName: function(tagName) { 
+            if (tagName === 'script') {
+                return [{
+                    type: 'text/python',
+                    innerHTML: self.code,
+                }]
+            }
+        },
+    }
     self.staticUrl = data.staticUrl
     self.print = function(msg) {
         postMessage({
@@ -22,28 +33,29 @@ function init(data) {
     importScripts(
         self.staticUrl + '/brython/brython.js',
         self.staticUrl + '/brython/brython_stdlib.js',
-        // self.staticUrl + 'brython/brython_modules.js',
+        self.staticUrl + '/brython/brython_modules.js',
     )
-    const paths = []
+    var paths = []
     if (data.cwdUrl) {
         paths.push(data.cwdUrl)
     }
+    paths.push(self.staticUrl + '/brython')
+    paths.push(self.staticUrl + '/brython/site-packages')
     self.__BRYTHON__.brython({
-        pythonpath: paths + [
-            self.staticUrl + '/brython',
-            self.staticUrl + '/brython/site-packages',
-        ],
+        pythonpath: paths,
         debug: 10, // 1
     })
-    // self.__BRYTHON__._run_script({
-    //     name: '__main__',
-    //     src: 'import cocode.stdio',
-    // })
+    run('import runner.stdio')
+}
+
+function run(src) {
+    self.code = src
+    self.__BRYTHON__.parser._run_scripts({})
 }
 
 // function run(data) {
 //     console.log(self.__BRYTHON__)
-//     const code = self.__BRYTHON__.run_script({
+//     var code = self.__BRYTHON__.run_script({
 //         name: data.name || '__main__',
 //         src: data.src,
 //     })
@@ -54,13 +66,10 @@ function init(data) {
 // }
 
 function runCode(code) {
-    const exitCode = self.__BRYTHON__.run_script({
-        name: '__main__',
-        src: code,
-    })
+    run(code)
     postMessage({
         type: 'done',
-        exit: exitCode,
+        exit: 0,
     })
 }
 
