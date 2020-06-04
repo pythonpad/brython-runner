@@ -16,6 +16,9 @@
             <button class="toolbar-button" onclick="run()">
                 Run
             </button>
+            <button class="toolbar-button" onclick="runUrl()">
+                Run URL
+            </button>
         </div>
         <div class="workspace-row">
             <div class="editor-column">
@@ -63,6 +66,7 @@
         })
         const runner = new BrythonRunner({
             staticUrl: '/static',
+            cwdUrl: '/static/brython_test',
             stdout: {
                 write(content) {
                     var el = document.createElement('code');
@@ -94,7 +98,10 @@
             const code = getCode();
             runner.runCode(code);
         }
-        
+        function runUrl() {
+            clearOutput()
+            runner.runUrl('/static/brython_test/test.py');
+        }
     </script>
     </body>
 </html>

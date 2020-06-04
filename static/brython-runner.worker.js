@@ -1,14 +1,27 @@
 function init(data) {
     self.window = self
+    self.runType = 'code'
     self.code = ''
+    self.url = ''
+    self.id = data.name || '__main__'
     self.document = {
         getElementsByTagName: function(tagName) { 
             if (tagName === 'script') {
-                return [{
-                    type: 'text/python',
-                    innerHTML: self.code,
-                }]
+                if (self.runType === 'code') {
+                    return [{
+                        type: 'text/python',
+                        id: self.id,
+                        innerHTML: self.code,
+                    }]
+                } else if (self.runType === 'url') {
+                    return [{
+                        type: 'text/python',
+                        id: getFilename(self.url),
+                        src: self.url,
+                    }]
+                }
             }
+            return []
         },
     }
     self.staticUrl = data.staticUrl
@@ -51,25 +64,36 @@ function init(data) {
     run('import runner.stdio')
 }
 
+function getFilename(url) {
+    var splitUrl = url.split('/')
+    return splitUrl[splitUrl.length - 1]
+}
+
+function getParentUrl(url) {
+    var splitUrl = url.split('/')
+    if (splitUrl.length === 1) {
+        return './'
+    } else {
+        return splitUrl.slice(0, splitUrl.length - 1).join('/')
+    }
+}
+
 function run(src) {
+    self.runType = 'code'
     self.code = src
     self.__BRYTHON__.parser._run_scripts({})
 }
 
-// function run(data) {
-//     console.log(self.__BRYTHON__)
-//     var code = self.__BRYTHON__.run_script({
-//         name: data.name || '__main__',
-//         src: data.src,
-//     })
-//     postMessage({
-//         type: 'done',
-//         value: code,
-//     })
-// }
+function runUrl(url) {
+    self.runType = 'url'
+    self.url = url
+    var pathBackup = self.__BRYTHON__.script_path
+    self.__BRYTHON__.script_path = getParentUrl(url)
+    self.__BRYTHON__.parser._run_scripts({})
+    self.__BRYTHON__.script_path = pathBackup
+}
 
-function runCode(code) {
-    run(code)
+function done() {
     postMessage({
         type: 'done',
         exit: 0,
@@ -82,7 +106,12 @@ onmessage = ({ data }) => {
             init(data)
             break
         case 'run-code':
-            runCode(data.code)
+            run(data.code)
+            done()
+            break
+        case 'run-url':
+            runUrl(data.url)
+            done()
             break
         default:
             break

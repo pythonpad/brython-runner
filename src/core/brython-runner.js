@@ -7,6 +7,7 @@ export default class BrythonRunner {
     setParamValues(params) {
         const values = {
             filePath: 'runner',
+            name: 'main.py',
             staticUrl: '/static',
             stdout: {
                 write(content) {
@@ -31,6 +32,7 @@ export default class BrythonRunner {
         this.worker = new Worker(`${this.staticUrl}/brython-runner.worker.js`);
         this.worker.postMessage({
             type: 'init',
+            name: this.name,
             filePath: this.filePath,
             staticUrl: this.staticUrl,
             cwdUrl: this.cwdUrl,
@@ -69,6 +71,15 @@ export default class BrythonRunner {
                 code,
             })
         })
-        // this.stdout.write('Running with runCode() now...\n')
+    }
+
+    runUrl(url) {
+        return new Promise(resolve => {
+            this.done = exit => resolve(exit)
+            this.worker.postMessage({
+                type: 'run-url',
+                url,
+            })
+        })
     }
 }
