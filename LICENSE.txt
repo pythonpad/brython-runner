@@ -1,5 +1,5 @@
 
-# Brython (./static/brython)
+# Brython 3.8.9 (./static/brython)
 =====================
 
 Copyright (c) 2012, Pierre Quentel pierre.quentel@gmail.com

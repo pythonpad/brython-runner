@@ -43,8 +43,11 @@ function init(data) {
     paths.push(self.staticUrl + '/brython/site-packages')
     self.__BRYTHON__.brython({
         pythonpath: paths,
-        debug: 10, // 1
+        debug: 1, // 10
     })
+    if (data.filePath) {
+        self.__BRYTHON__.script_path = data.filePath
+    }
     run('import runner.stdio')
 }
 

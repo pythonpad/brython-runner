@@ -6,6 +6,7 @@ export default class BrythonRunner {
 
     setParamValues(params) {
         const values = {
+            filePath: 'runner',
             staticUrl: '/static',
             stdout: {
                 write(content) {
@@ -30,6 +31,7 @@ export default class BrythonRunner {
         this.worker = new Worker(`${this.staticUrl}/brython-runner.worker.js`);
         this.worker.postMessage({
             type: 'init',
+            filePath: this.filePath,
             staticUrl: this.staticUrl,
             cwdUrl: this.cwdUrl,
         })
