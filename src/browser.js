@@ -4,8 +4,8 @@ var globalRef = (typeof this !== "undefined") ? this : window;
 
 if (module.hot) {
     module.hot.accept('./core/brython-runner', () => {
-        console.log('Accepting the updated Brython Runner module!');
-    });
+        console.log('Accepting the updated Brython Runner module!')
+    })
 }
 
-globalRef.BrythonRunner = BrythonRunner;
+globalRef.BrythonRunner = BrythonRunner
