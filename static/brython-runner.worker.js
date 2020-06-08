@@ -3,65 +3,70 @@ function init(data) {
     self.runType = 'code'
     self.code = ''
     self.url = ''
-    self.id = data.name || '__main__'
+    self.id = data.codeName 
+    self.codeCwd = data.codeCwd
     self.document = {
-        getElementsByTagName: function(tagName) { 
-            if (tagName === 'script') {
-                if (self.runType === 'code') {
-                    return [{
-                        type: 'text/python',
-                        id: self.id,
-                        innerHTML: self.code,
-                    }]
-                } else if (self.runType === 'url') {
-                    return [{
-                        type: 'text/python',
-                        id: getFilename(self.url),
-                        src: self.url,
-                    }]
-                }
-            }
-            return []
-        },
+        getElementsByTagName: getElementsByTagName,
     }
     self.staticUrl = data.staticUrl
-    self.print = function(msg) {
-        postMessage({
-            type: 'stdout',
-            value: msg,
-        })
-    }
-    self.printErr = function(msg) {
-        postMessage({
-            type: 'stderr',
-            value: msg,
-        })
-    }
-    self.sendMsg = function(type, msg) {
-        postMessage({
-            type,
-            value: msg
-        })
-    }
+    initMsgSenders()
     importScripts(
         self.staticUrl + '/brython/brython.js',
         self.staticUrl + '/brython/brython_stdlib.js',
         self.staticUrl + '/brython/brython_modules.js',
     )
-    var paths = []
-    if (data.cwdUrl) {
-        paths.push(data.cwdUrl)
-    }
-    paths.push(self.staticUrl + '/brython')
-    paths.push(self.staticUrl + '/brython/site-packages')
+    var paths = [
+        self.staticUrl + '/brython',
+        self.staticUrl + '/brython/site-packages',
+    ]
     self.__BRYTHON__.brython({
-        pythonpath: paths,
+        pythonpath: paths + data.paths,
         debug: 1, // 10
     })
     if (data.filePath) {
         self.__BRYTHON__.script_path = data.filePath
     }
     run('import runner.stdio')
+}
+
+function getElementsByTagName(tagName) {
+    if (tagName === 'script') {
+        if (self.runType === 'code') {
+            return [{
+                type: 'text/python',
+                id: self.id,
+                innerHTML: self.code,
+            }]
+        } else if (self.runType === 'url') {
+            return [{
+                type: 'text/python',
+                id: getFilename(self.url),
+                src: self.url,
+            }]
+        }
+    }
+    return []
+}
+
+function initMsgSenders() {
+    self.print = function (msg) {
+        postMessage({
+            type: 'stdout',
+            value: msg,
+        })
+    }
+    self.printErr = function (msg) {
+        postMessage({
+            type: 'stderr',
+            value: msg,
+        })
+    }
+    self.sendMsg = function (type, msg) {
+        postMessage({
+            type,
+            value: msg
+        })
+    }
 }
 
 function getFilename(url) {
@@ -81,7 +86,10 @@ function getParentUrl(url) {
 function run(src) {
     self.runType = 'code'
     self.code = src
+    var pathBackup = self.__BRYTHON__.script_path
+    self.__BRYTHON__.script_path = self.codeCwd
     self.__BRYTHON__.parser._run_scripts({})
+    self.__BRYTHON__.script_path = pathBackup
 }
 
 function runUrl(url) {
