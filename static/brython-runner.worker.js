@@ -20,7 +20,7 @@ function init(data) {
         self.staticUrl + '/brython/site-packages',
     ]
     self.__BRYTHON__.brython({
-        pythonpath: paths + data.paths,
+        pythonpath: paths.concat(data.paths),
         debug: 1, // 10
     })
     if (data.filePath) {

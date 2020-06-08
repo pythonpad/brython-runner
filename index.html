@@ -16,9 +16,9 @@
             <button class="toolbar-button" onclick="run()">
                 Run
             </button>
-            <button class="toolbar-button" onclick="runUrl()">
+            <!-- <button class="toolbar-button" onclick="runUrl()">
                 Run URL
-            </button>
+            </button> -->
         </div>
         <div class="workspace-row">
             <div class="editor-column">
@@ -74,7 +74,7 @@
                     el.appendChild(text)
                     document.getElementById('output').appendChild(el);  
                 },
-                flush() {}
+                flush() { }
             },
             stderr: {
                 write(content) {
