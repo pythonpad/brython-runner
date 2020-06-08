@@ -123,11 +123,11 @@ onmessage = ({ data }) => {
         case 'init':
             init(data)
             break
-        case 'run-code':
+        case 'run.code':
             run(data.code)
             done()
             break
-        case 'run-url':
+        case 'run.url':
             runUrl(data.url)
             done()
             break

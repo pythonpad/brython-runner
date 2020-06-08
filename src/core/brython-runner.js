@@ -63,7 +63,7 @@ export default class BrythonRunner {
             case 'stderr.flush':
                 this.stderr.flush()
                 break
-                
+
             default:
                 break
         }
@@ -73,7 +73,7 @@ export default class BrythonRunner {
         return new Promise(resolve => {
             this.done = exit => resolve(exit)
             this.worker.postMessage({
-                type: 'run-code',
+                type: 'run.code',
                 code,
             })
         })
@@ -83,7 +83,7 @@ export default class BrythonRunner {
         return new Promise(resolve => {
             this.done = exit => resolve(exit)
             this.worker.postMessage({
-                type: 'run-url',
+                type: 'run.url',
                 url,
             })
         })
