@@ -119,5 +119,5 @@ This tells the Brython runner instance to run the Python code content in `src`. 
 
 **Example**
 ```javascript
-await async runner.runCode('print("hello world")');
+await runner.runCode('print("hello world")');
 console.log(`says the Python code.`);

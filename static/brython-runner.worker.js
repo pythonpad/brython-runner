@@ -49,22 +49,32 @@ function getElementsByTagName(tagName) {
 }
 
 function initMsgSenders() {
-    self.print = function (msg) {
-        postMessage({
-            type: 'stdout',
-            value: msg,
+    self.stdoutWrite = function (data) {
+        this.postMessage({
+            type: 'stdout.write',
+            value: data,
         })
     }
-    self.printErr = function (msg) {
-        postMessage({
-            type: 'stderr',
-            value: msg,
+    self.stdoutFlush = function () {
+        this.postMessage({
+            type: 'stdout.flush',
         })
     }
-    self.sendMsg = function (type, msg) {
+    self.stderrWrite = function (data) {
+        this.postMessage({
+            type: 'stderr.write',
+            value: data,
+        })
+    }
+    self.stderrFlush = function () {
+        this.postMessage({
+            type: 'stderr.flush',
+        })
+    }
+    self.sendMsg = function (type, value) {
         postMessage({
-            type,
-            value: msg
+            type: type,
+            value: value,
         })
     }
 }

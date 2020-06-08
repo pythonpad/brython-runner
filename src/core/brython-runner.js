@@ -48,17 +48,22 @@ export default class BrythonRunner {
                 this.done(msg.data.exit)
                 break
 
-            case 'stdout':
-                console.log(this)
+            case 'stdout.write':
                 this.stdout.write(msg.data.value)
+                break
+
+            case 'stdout.flush':
                 this.stdout.flush()
                 break
 
-            case 'stderr':
+            case 'stderr.write':
                 this.stderr.write(msg.data.value)
-                this.stderr.flush()
                 break
 
+            case 'stderr.flush':
+                this.stderr.flush()
+                break
+                
             default:
                 break
         }
