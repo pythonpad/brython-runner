@@ -22,6 +22,9 @@ export default class BrythonRunner {
                 },
                 flush() { },
             },
+            onMsg(type, value) {
+                console.log('Got a message:', type, value)
+            },
             ...params
         }
         for (const key of Object.keys(values)) {
@@ -65,6 +68,7 @@ export default class BrythonRunner {
                 break
 
             default:
+                this.onMsg(msg.data.type, msg.data.value)
                 break
         }
     }
