@@ -3,13 +3,19 @@ function init(data) {
     self.runType = 'code'
     self.code = ''
     self.url = ''
-    self.id = data.codeName 
+    self.id = data.codeName
     self.codeCwd = data.codeCwd
     self.document = {
         getElementsByTagName: getElementsByTagName,
     }
     self.staticUrl = data.staticUrl
+    self.myWait = function () {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => resolve(), 2000)
+        })
+    }
     initMsgSenders()
+    initMsgListeners()
     importScripts(
         self.staticUrl + '/brython/brython.js',
         self.staticUrl + '/brython/brython_stdlib.js',
@@ -76,6 +82,12 @@ function initMsgSenders() {
             type: type,
             value: value,
         })
+    }
+}
+
+function initMsgListeners() {
+    self.receiveMsg = function (type) {
+
     }
 }
 
