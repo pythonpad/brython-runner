@@ -92,4 +92,11 @@ export default class BrythonRunner {
             })
         })
     }
+
+    sendMsg(type, value) {
+        this.worker.postMessage({
+            type,
+            value,
+        })
+    }
 }
