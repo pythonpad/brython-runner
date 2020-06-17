@@ -86,8 +86,24 @@ function initMsgSenders() {
 }
 
 function initMsgListeners() {
-    self.receiveMsg = function (type) {
-
+    self.msgListeners = {}
+    self.addMsgListener = function (type, callback) {
+        if (!(type in self.msgListeners)) {
+            self.msgListeners[type] = [callback]
+        } else {
+            self.msgListeners[type].push(callback)
+        }
+    }
+    self.removeMsgListener = function (type, callback) {
+        if (type in self.msgListeners) {
+            var newMsgListeners = []
+            for (var i = 0; i < self.msgListeners[type].length; i++) {
+                if (self.msgListeners[type][i] !== callback) {
+                    newMsgListeners.push(self.msgListeners[type][i])
+                }
+            }
+            self.msgListeners[type] = newMsgListeners
+        }
     }
 }
 
@@ -130,7 +146,8 @@ function done() {
     })
 }
 
-onmessage = ({ data }) => {
+onmessage = function(message) {
+    data = message.data
     switch (data.type) {
         case 'init':
             init(data)
@@ -145,5 +162,10 @@ onmessage = ({ data }) => {
             break
         default:
             break
+    }
+    if (data.type in self.msgListeners) {
+        for (var i = 0; i < self.msgListeners[data.type].length; i++) {
+            self.msgListeners[data.type][i](data)
+        }
     }
 }
