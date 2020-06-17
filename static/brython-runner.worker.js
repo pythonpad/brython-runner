@@ -9,11 +9,6 @@ function init(data) {
         getElementsByTagName: getElementsByTagName,
     }
     self.staticUrl = data.staticUrl
-    self.myWait = function () {
-        return new Promise((resolve, reject) => {
-            setTimeout(() => resolve(), 2000)
-        })
-    }
     initMsgSenders()
     initMsgListeners()
     importScripts(
@@ -104,6 +99,11 @@ function initMsgListeners() {
             }
             self.msgListeners[type] = newMsgListeners
         }
+    }
+    self.receiveMsg = function (type) {
+        return new Promise((resolve, reject) => {
+            self.addEventListener(type, msg => resolve(msg))    
+        })
     }
 }
 
