@@ -101,8 +101,12 @@ function initMsgListeners() {
         }
     }
     self.receiveMsg = function (type) {
-        return new Promise((resolve, reject) => {
-            self.addEventListener(type, msg => resolve(msg))    
+        return new Promise(function (resolve, reject) {
+            var callback = function callback(msg) {
+                resolve(msg.value)
+                self.removeMsgListner(type, callback)
+            }
+            self.addMsgListener(type, callback)    
         })
     }
 }
