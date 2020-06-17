@@ -84,6 +84,9 @@ var options = {
         },
         flush() { },
     },
+    onMsg(type, value) {
+        console.log('Got a message:', type, value)
+    }
 };
 ```
 
@@ -112,6 +115,10 @@ Provide an object with `write(content)` and `flush()` functions. This will be us
 *stderr*
 
 Provide an object with `write(content)` and `flush()` functions. This will be used when data comes out from the standard error stream.
+
+*onMsg*
+
+This function will be called when a message with a non-predefined type is received from the Brython runner worker. `type` and `value` parameter will be provided.
 
 #### `async runner.runCode(src)`
 
