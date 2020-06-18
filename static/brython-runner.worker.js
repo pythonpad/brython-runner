@@ -22,7 +22,7 @@ function init(data) {
     ]
     self.__BRYTHON__.brython({
         pythonpath: paths.concat(data.paths),
-        debug: 1, // 10
+        debug: 10, // 1
     })
     if (data.filePath) {
         self.__BRYTHON__.script_path = data.filePath
@@ -104,9 +104,9 @@ function initMsgListeners() {
         return new Promise(function (resolve, reject) {
             var callback = function callback(msg) {
                 resolve(msg.value)
-                self.removeMsgListner(type, callback)
+                self.removeMsgListener(type, callback)
             }
-            self.addMsgListener(type, callback)    
+            self.addMsgListener(type, callback)
         })
     }
 }
@@ -150,7 +150,7 @@ function done() {
     })
 }
 
-onmessage = function(message) {
+onmessage = function (message) {
     data = message.data
     switch (data.type) {
         case 'init':
