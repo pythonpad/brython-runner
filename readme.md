@@ -72,6 +72,9 @@ var options = {
     codeCwd: '.',
     staticUrl: '/static',
     paths: [],
+    postInitScripts: [
+        'import brythonsync',
+    ],
     stdout: {
         write(content) {
             console.log(content)
@@ -107,6 +110,10 @@ Brython requires essential files to be accessible from the server. Serve the `./
 *paths*
 
 Add paths for additional dependencies. The paths provided here will be included in `sys.path`.
+
+*postInitScripts*
+
+These Python codes are run after initializing the runner session. 
 
 *stdout*
 

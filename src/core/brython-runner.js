@@ -10,6 +10,7 @@ export default class BrythonRunner {
             codeCwd: '.',
             staticUrl: '/static',
             paths: [],
+            postInitScripts: [],
             stdout: {
                 write(content) {
                     console.log(content)
@@ -40,6 +41,7 @@ export default class BrythonRunner {
             codeCwd: this.codeCwd,
             staticUrl: this.staticUrl,
             paths: this.paths,
+            postInitScripts: this.postInitScripts,
         })
         this.worker.onmessage = msg => this.handleMessage(msg)
     }

@@ -28,7 +28,11 @@ function init(data) {
         self.__BRYTHON__.script_path = data.filePath
     }
     run('import runner.stdio')
-    run('import runner.sleep')
+    if (data.postInitScripts) {
+        for (var i = 0; i < data.postInitScripts.length; i++) {
+            run(data.postInitScripts[i])
+        }
+    }
 }
 
 function getElementsByTagName(tagName) {
