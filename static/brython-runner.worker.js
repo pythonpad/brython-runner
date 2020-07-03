@@ -28,6 +28,7 @@ function init(data) {
         self.__BRYTHON__.script_path = data.filePath
     }
     run('import runner.stdio')
+    run('import runner.sleep')
 }
 
 function getElementsByTagName(tagName) {
