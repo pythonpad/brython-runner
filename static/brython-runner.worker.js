@@ -42,7 +42,7 @@ function getInput(message) {
 
     var key = req.responseText;
     req = new XMLHttpRequest();
-    req.open('POST', '/hanger/read/' + key, false);
+    req.open('POST', '/hanger/' + key + '/read/', false);
     req.send('')
 
     if (req.status !== 200) {

@@ -77,7 +77,7 @@ export default class BrythonRunner {
             case 'stdin.readline':
                 const data = await this.stdin.readline()
                 var xhr = new XMLHttpRequest();
-                xhr.open('POST', `/hanger/write/${msg.data.value}/`, true);
+                xhr.open('POST', `/hanger/${msg.data.value}/write/`, true);
                 xhr.onload = e => {
                     if (xhr.readyState === 4) {
                         if (xhr.status === 200) {
