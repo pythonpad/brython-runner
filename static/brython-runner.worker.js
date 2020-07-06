@@ -9,12 +9,12 @@ function init(data) {
         getElementsByTagName: getElementsByTagName,
     }
     self.staticUrl = data.staticUrl
+    self.prompt = getInput
     initMsgSenders()
     initMsgListeners()
     importScripts(
         self.staticUrl + '/brython/brython.js',
         self.staticUrl + '/brython/brython_stdlib.js',
-        self.staticUrl + '/brython/brython_modules.js',
     )
     var paths = [
         self.staticUrl + '/brython',
@@ -28,11 +28,35 @@ function init(data) {
         self.__BRYTHON__.script_path = data.filePath
     }
     run('import runner.stdio')
-    if (data.postInitScripts) {
-        for (var i = 0; i < data.postInitScripts.length; i++) {
-            run(data.postInitScripts[i])
-        }
+}
+
+function getInput(message) {
+    var req = new XMLHttpRequest();
+    req.open('POST', '/hanger/open/', false);
+    req.send('');
+
+    if (req.status !== 200) {
+        console.error('Failed to tunnel through the server to get input.');
+        return '';
     }
+
+    var key = req.responseText;
+    req = new XMLHttpRequest();
+    req.open('POST', '/hanger/read/' + key, false);
+    req.send('')
+
+    if (req.status !== 200) {
+        console.error('Failed to tunnel through the server to get input.');
+        return '';
+    }
+
+    return req.responseText;
+}
+
+function sleep(duration) {
+    var req = new XMLHttpRequest();
+    req.open('GET', '/hanger/sleep/?duration=' + duration, false);
+    req.send(null);
 }
 
 function getElementsByTagName(tagName) {

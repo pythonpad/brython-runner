@@ -23,6 +23,11 @@ export default class BrythonRunner {
                 },
                 flush() { },
             },
+            stdin: {
+                async readline() {
+                    return prompt();
+                },
+            },
             onMsg(type, value) {
                 console.log('Got a message:', type, value)
             },
@@ -46,7 +51,7 @@ export default class BrythonRunner {
         this.worker.onmessage = msg => this.handleMessage(msg)
     }
 
-    handleMessage(msg) {
+    async handleMessage(msg) {
         // console.log('brython message', msg)
         switch (msg.data.type) {
             case 'done':
@@ -67,6 +72,25 @@ export default class BrythonRunner {
 
             case 'stderr.flush':
                 this.stderr.flush()
+                break
+
+            case 'stdin.readline':
+                const data = await this.stdin.readline()
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', `/hanger/write/${msg.data.value}/`, true);
+                xhr.onload = e => {
+                    if (xhr.readyState === 4) {
+                        if (xhr.status === 200) {
+                            // Done.
+                        } else {
+                            console.error('Failed to send input data via server tunnel.', xhr.statusText);
+                        }
+                    }
+                };
+                xhr.onerror = e => {
+                    console.error('Failed to send input data via server tunnel.', xhr.statusText);
+                };
+                xhr.send(data); 
                 break
 
             default:
@@ -100,5 +124,9 @@ export default class BrythonRunner {
             type,
             value,
         })
+    }
+
+    sendRawInput(value) {
+
     }
 }
