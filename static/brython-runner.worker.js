@@ -10,6 +10,7 @@ function init(data) {
     }
     self.staticUrl = data.staticUrl
     self.prompt = getInput
+    self.hangSleep = hangSleep
     initMsgSenders()
     initMsgListeners()
     importScripts(
@@ -27,10 +28,14 @@ function init(data) {
     if (data.filePath) {
         self.__BRYTHON__.script_path = data.filePath
     }
-    run('import runner.stdio')
+    run('import runner.stdio; import runner.sleep;')
 }
 
 function getInput(message) {
+    if (message) {
+        self.stdoutWrite(message + '');
+        self.stdoutFlush();
+    }
     var req = new XMLHttpRequest();
     req.open('POST', '/hanger/open/', false);
     req.send('');
@@ -59,7 +64,7 @@ function getInput(message) {
     return req.responseText;
 }
 
-function sleep(duration) {
+function hangSleep(duration) {
     var req = new XMLHttpRequest();
     req.open('GET', '/hanger/sleep/?duration=' + duration, false);
     req.send(null);
