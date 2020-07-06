@@ -41,6 +41,12 @@ function getInput(message) {
     }
 
     var key = req.responseText;
+
+    this.postMessage({
+        type: 'stdin.readline',
+        value: key,
+    })
+
     req = new XMLHttpRequest();
     req.open('POST', '/hanger/' + key + '/read/', false);
     req.send('')
