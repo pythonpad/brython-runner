@@ -75,28 +75,34 @@ export default class BrythonRunner {
                 break
 
             case 'stdin.readline':
+                this.hangerKey = msg.data.value
                 const data = await this.stdin.readline()
-                var xhr = new XMLHttpRequest();
-                xhr.open('POST', `/hanger/${msg.data.value}/write/`, true);
-                xhr.onload = e => {
-                    if (xhr.readyState === 4) {
-                        if (xhr.status === 200) {
-                            // Done.
-                        } else {
-                            console.error('Failed to send input data via server tunnel.', xhr.statusText);
-                        }
-                    }
-                };
-                xhr.onerror = e => {
-                    console.error('Failed to send input data via server tunnel.', xhr.statusText);
-                };
-                xhr.send(data); 
+                this.writeInputData(this.hangerKey, data)
+                this.hangerKey = null
                 break
 
             default:
                 this.onMsg(msg.data.type, msg.data.value)
                 break
         }
+    }
+
+    writeInputData(key, data) {
+        var xhr = new XMLHttpRequest()
+        xhr.open('POST', `/hanger/${key}/write/`, true)
+        xhr.onload = e => {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    // Done.
+                } else {
+                    console.error('Failed to send input data via server tunnel.', xhr.statusText)
+                }
+            }
+        }
+        xhr.onerror = e => {
+            console.error('Failed to send input data via server tunnel.', xhr.statusText)
+        }
+        xhr.send(data) 
     }
 
     runCode(code) {
@@ -126,7 +132,11 @@ export default class BrythonRunner {
         })
     }
 
-    sendRawInput(value) {
-
+    stopRunning() {
+        if (this.hangerKey) {
+            this.writeInputData(this.hangerKey, '')
+        }
+        this.worker.terminate()
+        this.initWorker()
     }
 }
