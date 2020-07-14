@@ -11,6 +11,7 @@ export default class BrythonRunner {
             staticUrl: '/static',
             paths: [],
             postInitScripts: [],
+            debug: 0,
             stdout: {
                 write(content) {
                     console.log(content)
@@ -42,6 +43,7 @@ export default class BrythonRunner {
         this.worker = new Worker(`${this.staticUrl}/brython-runner.worker.js`);
         this.worker.postMessage({
             type: 'init',
+            debug: this.debug,
             codeName: this.codeName,
             codeCwd: this.codeCwd,
             staticUrl: this.staticUrl,

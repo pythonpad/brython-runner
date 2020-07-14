@@ -23,7 +23,7 @@ function init(data) {
     ]
     self.__BRYTHON__.brython({
         pythonpath: paths.concat(data.paths),
-        debug: 0, // 1
+        debug: data.debug || 0, // 1
     })
     if (data.filePath) {
         self.__BRYTHON__.script_path = data.filePath
