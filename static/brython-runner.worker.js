@@ -23,7 +23,7 @@ function init(data) {
     ]
     self.__BRYTHON__.brython({
         pythonpath: paths.concat(data.paths),
-        debug: 10, // 1
+        debug: 0, // 1
     })
     if (data.filePath) {
         self.__BRYTHON__.script_path = data.filePath
@@ -183,10 +183,10 @@ function runUrl(url) {
     self.__BRYTHON__.script_path = pathBackup
 }
 
-function done() {
+function done(exit) {
     postMessage({
         type: 'done',
-        exit: 0,
+        exit,
     })
 }
 
@@ -197,12 +197,20 @@ onmessage = function (message) {
             init(data)
             break
         case 'run.code':
-            run(data.code)
-            done()
+            try {
+                run(data.code)
+                done(0)
+            } catch (err) {
+                done(1)
+            }
             break
         case 'run.url':
-            runUrl(data.url)
-            done()
+            try {
+                runUrl(data.url)
+                done(0)
+            } catch (err) {
+                done(1)
+            }
             break
         default:
             break
