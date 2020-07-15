@@ -9,7 +9,7 @@ function init(data) {
         getElementsByTagName: getElementsByTagName,
     }
     self.staticUrl = data.staticUrl
-    self.files = data.files
+    self.filesObj = data.files
     self.filesUpdated = filesUpdated
     self.prompt = getInput
     self.hangSleep = hangSleep
@@ -30,21 +30,31 @@ function init(data) {
     if (data.filePath) {
         self.__BRYTHON__.script_path = data.filePath
     }
-    run('import runner.stdio; import runner.sleep; import runner.fileio;');
+    run('import runner.stdio; import runner.sleep; import runner.fileio;')
     self.__BRYTHON__.builtins.open = self.openFile
     for (var i = 0; i < data.postInitScripts.length; i++) {
-        run(data.postInitScripts[i]);
+        run(data.postInitScripts[i])
     }
 }
 
-function filesUpdated(filename) {
-    this.postMessage({
-        type: 'file.update',
-        value: {
-            filename: filename,
-            data: self.files[filename]
-        },
-    })
+function filesUpdated(filename, type, body) {
+    if (!type && !body) {
+        this.postMessage({
+            type: 'file.delete',
+            value: filename,
+        })
+    } else {
+        this.postMessage({
+            type: 'file.update',
+            value: {
+                filename: filename,
+                data: {
+                    type: type,
+                    body: body,
+                }
+            },
+        })
+    }
 }
 
 function getInput(message) {
