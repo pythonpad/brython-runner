@@ -30,6 +30,9 @@ export default class BrythonRunner {
                     return prompt();
                 },
             },
+            onFileUpdate(filename, data) {
+                console.log('File got updated:', filename, data)
+            },
             onMsg(type, value) {
                 console.log('Got a message:', type, value)
             },
@@ -83,6 +86,11 @@ export default class BrythonRunner {
                 const data = await this.stdin.readline()
                 this.writeInputData(this.hangerKey, data)
                 this.hangerKey = null
+                break
+
+            case 'file.update':
+                this.files[msg.data.value.filename] = msg.data.value.data
+                this.onFileUpdate(msg.data.value.filename, msg.data.value.data)
                 break
 
             default:

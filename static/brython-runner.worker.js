@@ -10,6 +10,7 @@ function init(data) {
     }
     self.staticUrl = data.staticUrl
     self.files = data.files
+    self.filesUpdated = filesUpdated
     self.prompt = getInput
     self.hangSleep = hangSleep
     initMsgSenders()
@@ -34,6 +35,16 @@ function init(data) {
     for (var i = 0; i < data.postInitScripts.length; i++) {
         run(data.postInitScripts[i]);
     }
+}
+
+function filesUpdated(filename) {
+    this.postMessage({
+        type: 'file.update',
+        value: {
+            filename: filename,
+            data: self.files[filename]
+        },
+    })
 }
 
 function getInput(message) {
