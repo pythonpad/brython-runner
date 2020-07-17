@@ -37,6 +37,11 @@ function init(data) {
     }
 }
 
+function setFiles(files) {
+    self.filesObj = files
+    self.setFilesFromObj()
+}
+
 function filesUpdated(filename, type, body) {
     if (!type && !body) {
         this.postMessage({
@@ -224,6 +229,15 @@ onmessage = function (message) {
             break
         case 'run.code':
             try {
+                run(data.code)
+                done(0)
+            } catch (err) {
+                done(1)
+            }
+            break
+        case 'run.code-with-files':
+            try {
+                setFiles(data.files)
                 run(data.code)
                 done(0)
             } catch (err) {

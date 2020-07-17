@@ -127,6 +127,17 @@ export default class BrythonRunner {
         })
     }
 
+    runCodeWithFiles(code, files) {
+        return new Promise(resolve => {
+            this.done = exit => resolve(exit)
+            this.worker.postMessage({
+                type: 'run.code-with-files',
+                code,
+                files,
+            })
+        })
+    }
+
     runUrl(url) {
         return new Promise(resolve => {
             this.done = exit => resolve(exit)
