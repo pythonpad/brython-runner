@@ -24,8 +24,8 @@ function init(data) {
         self.staticUrl + '/brython/site-packages',
     ]
     self.__BRYTHON__.brython({
-        pythonpath: paths.concat(data.paths),
-        debug: data.debug || 0, // 1
+        pythonpath: [].concat(data.paths).concat(paths),
+        debug: data.debug || 0,
     })
     if (data.filePath) {
         self.__BRYTHON__.script_path = data.filePath
@@ -35,6 +35,10 @@ function init(data) {
     for (var i = 0; i < data.postInitScripts.length; i++) {
         run(data.postInitScripts[i])
     }
+    this.postMessage({
+        type: 'brython.init',
+        value: '',
+    })
 }
 
 function setFiles(files) {
@@ -64,41 +68,41 @@ function filesUpdated(filename, type, body) {
 
 function getInput(message) {
     if (message) {
-        self.stdoutWrite(message + '');
-        self.stdoutFlush();
+        self.stdoutWrite(message + '')
+        self.stdoutFlush()
     }
-    var req = new XMLHttpRequest();
-    req.open('POST', '/hanger/open/', false);
-    req.send('');
+    var req = new XMLHttpRequest()
+    req.open('POST', '/hanger/open/', false)
+    req.send('')
 
     if (req.status !== 200) {
-        console.error('Failed to tunnel through the server to get input.');
-        return '';
+        console.error('Failed to tunnel through the server to get input.')
+        return ''
     }
 
-    var key = req.responseText;
+    var key = req.responseText
 
     this.postMessage({
         type: 'stdin.readline',
         value: key,
     })
 
-    req = new XMLHttpRequest();
-    req.open('POST', '/hanger/' + key + '/read/', false);
+    req = new XMLHttpRequest()
+    req.open('POST', '/hanger/' + key + '/read/', false)
     req.send('')
 
     if (req.status !== 200) {
-        console.error('Failed to tunnel through the server to get input.');
-        return '';
+        console.error('Failed to tunnel through the server to get input.')
+        return ''
     }
 
-    return req.responseText;
+    return req.responseText
 }
 
 function hangSleep(duration) {
-    var req = new XMLHttpRequest();
-    req.open('GET', '/hanger/sleep/?duration=' + duration, false);
-    req.send(null);
+    var req = new XMLHttpRequest()
+    req.open('GET', '/hanger/sleep/?duration=' + duration, false)
+    req.send(null)
 }
 
 function getElementsByTagName(tagName) {

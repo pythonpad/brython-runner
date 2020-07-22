@@ -30,6 +30,9 @@ export default class BrythonRunner {
                     return prompt();
                 },
             },
+            onInit() {
+                console.log('Brython runner is ready.')
+            },
             onFileUpdate(filename, data) {
                 console.log('File got updated:', filename, data)
             },
@@ -61,6 +64,10 @@ export default class BrythonRunner {
     async handleMessage(msg) {
         // console.log('brython message', msg)
         switch (msg.data.type) {
+            case 'brython.init':
+                this.onInit()
+                break
+
             case 'done':
                 this.done(msg.data.exit)
                 break
