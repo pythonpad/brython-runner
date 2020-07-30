@@ -21,9 +21,11 @@
     "codemirror": "^5.54.0",
     "gulp": "^4.0.2",
     "gulp-babel": "^8.0.0",
-    "raw-loader": "^4.0.1",
     "webpack": "^4.43.0",
     "webpack-dev-server": "^3.11.0",
     "yargs": "^15.3.1"
+  },
+  "dependencies": {
+    "raw-loader": "^4.0.1"
   }
 }
