@@ -10,6 +10,7 @@ function init(data) {
     }
     self.staticUrl = data.staticUrl
     self.filesObj = data.files
+    self.importLocalFile = importLocalFile
     self.filesUpdated = filesUpdated
     self.prompt = getInput
     self.hangSleep = hangSleep
@@ -24,7 +25,7 @@ function init(data) {
         self.staticUrl + '/brython/site-packages',
     ]
     self.__BRYTHON__.brython({
-        pythonpath: [].concat(data.paths).concat(paths),
+        pythonpath: ['/__pythonpad_local__'].concat(data.paths).concat(paths),
         debug: data.debug || 0,
     })
     if (data.filePath) {
@@ -41,6 +42,14 @@ function init(data) {
     })
 }
 
+function importLocalFile(filename) {
+    if (self.filesObj[filename] && self.filesObj[filename].type === 'text') {
+        return self.filesObj[filename].body
+    } else {
+        return null
+    }
+}
+
 function setFiles(files) {
     self.filesObj = files
     self.setFilesFromObj()
@@ -48,11 +57,16 @@ function setFiles(files) {
 
 function filesUpdated(filename, type, body) {
     if (!type && !body) {
+        delete self.filesObj[filename]
         this.postMessage({
             type: 'file.delete',
             value: filename,
         })
     } else {
+        self.filesObj[filename] = {
+            type: type,
+            body: body,
+        }
         this.postMessage({
             type: 'file.update',
             value: {

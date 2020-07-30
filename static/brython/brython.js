@@ -9182,7 +9182,18 @@ $B.set_func_names(module,"builtins")
 function parent_package(mod_name){var parts=mod_name.split(".")
 parts.pop()
 return parts.join(".")}
-function $download_module(mod,url,$package){var xhr=new XMLHttpRequest(),fake_qs="?v="+(new Date().getTime()),res=null,mod_name=mod.__name__
+function $download_module(mod,url,$package){
+// PYTHONPAD HACK   
+var pythonpad_local_prefix = '/__pythonpad_local__/'
+if (url.startsWith(pythonpad_local_prefix)) {
+    var value = self.importLocalFile(url.slice(pythonpad_local_prefix.length))
+    if (value == null) {
+        throw _b_.FileNotFoundError.$factory("No module named '" + mod_name + "'")
+    }
+    return value
+}
+// PYTHONPAD HACK END
+var xhr=new XMLHttpRequest(),fake_qs="?v="+(new Date().getTime()),res=null,mod_name=mod.__name__
 var timer=_window.setTimeout(function(){xhr.abort()},5000)
 if($B.$options.cache){xhr.open("GET",url,false)}else{xhr.open("GET",url+fake_qs,false)}
 xhr.send()
