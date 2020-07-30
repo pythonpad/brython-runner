@@ -14,6 +14,7 @@ function init(data) {
     self.filesUpdated = filesUpdated
     self.prompt = getInput
     self.hangSleep = hangSleep
+    self.prevErrOut = null
     initMsgSenders()
     initMsgListeners()
     importScripts(
@@ -140,6 +141,7 @@ function getElementsByTagName(tagName) {
 
 function initMsgSenders() {
     self.stdoutWrite = function (data) {
+        self.prevErrOut = null
         this.postMessage({
             type: 'stdout.write',
             value: data,
@@ -151,6 +153,10 @@ function initMsgSenders() {
         })
     }
     self.stderrWrite = function (data) {
+        if ((data + '').startsWith('Traceback (most recent call last):') && (data === self.prevErrOut)) {
+            return // Skip duplicated error message.
+        }
+        self.prevErrOut = data
         this.postMessage({
             type: 'stderr.write',
             value: data,
@@ -215,21 +221,29 @@ function getParentUrl(url) {
 }
 
 function run(src) {
+    self.prevErrOut = null
     self.runType = 'code'
     self.code = src
     var pathBackup = self.__BRYTHON__.script_path
     self.__BRYTHON__.script_path = self.codeCwd
-    self.__BRYTHON__.parser._run_scripts({})
-    self.__BRYTHON__.script_path = pathBackup
+    try {
+        self.__BRYTHON__.parser._run_scripts({})
+    } catch (err) { } finally {
+        self.__BRYTHON__.script_path = pathBackup
+    }
 }
 
 function runUrl(url) {
+    self.prevErrOut = null
     self.runType = 'url'
     self.url = url
     var pathBackup = self.__BRYTHON__.script_path
     self.__BRYTHON__.script_path = getParentUrl(url)
-    self.__BRYTHON__.parser._run_scripts({})
-    self.__BRYTHON__.script_path = pathBackup
+    try {
+        self.__BRYTHON__.parser._run_scripts({})
+    } catch (err) { } finally {
+        self.__BRYTHON__.script_path = pathBackup
+    }
 }
 
 function done(exit) {
