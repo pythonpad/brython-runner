@@ -30,7 +30,7 @@ function init(data) {
     if (data.filePath) {
         self.__BRYTHON__.script_path = data.filePath
     }
-    run('import runner.stdio; import runner.sleep; import runner.fileio;')
+    run(data.initScripts.join('\n'))
     self.__BRYTHON__.builtins.open = self.openFile
     for (var i = 0; i < data.postInitScripts.length; i++) {
         run(data.postInitScripts[i])

@@ -1,3 +1,7 @@
+import stdioSrc from '!!raw-loader!../scripts/stdio.py'
+import sleepSrc from '!!raw-loader!../scripts/sleep.py'
+import fileioSrc from '!!raw-loader!../scripts/fileio.py'
+
 export default class BrythonRunner {
     constructor(params) {
         this.setParamValues(params)
@@ -55,6 +59,11 @@ export default class BrythonRunner {
             codeCwd: this.codeCwd,
             staticUrl: this.staticUrl,
             paths: this.paths,
+            initScripts: [
+                stdioSrc,
+                sleepSrc,
+                fileioSrc,
+            ],
             postInitScripts: this.postInitScripts,
             files: this.files,
         })
