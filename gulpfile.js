@@ -20,11 +20,18 @@ gulp.task('build-webpack', callback => {
     });
 });
 
-gulp.task('build-babel', () => {
-    return gulp.src(['src/**/*', '!src/browser.js'])
+gulp.task('compile-js-babel', () => {
+    return gulp.src(['src/**/*', '!src/**/*.py', '!src/browser.js'])
         .pipe(babel())
         .pipe(gulp.dest('lib'));
 });
+
+gulp.task('copy-py', () => {
+    return gulp.src(['src/**/*.py'])
+        .pipe(gulp.dest('lib'));
+});
+
+gulp.task('build-babel', gulp.parallel('compile-js-babel', 'copy-py'));
 
 gulp.task('dev-webpack', () => {
     const config = webpackConfig('development');
@@ -43,5 +50,4 @@ gulp.task('dev-webpack', () => {
 });
 
 gulp.task('dev', gulp.series('dev-webpack'));
-gulp.task('build', gulp.parallel('build-webpack'));
-// gulp.task('build', gulp.parallel('build-babel', 'build-webpack'));
+gulp.task('build', gulp.parallel('build-babel', 'build-webpack'));
