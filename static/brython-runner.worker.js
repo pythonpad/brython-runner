@@ -22,8 +22,8 @@ function init(data) {
         self.staticUrl + '/brython/brython_stdlib.js',
     )
     var paths = [
+        self.staticUrl + '/brython/lib',
         self.staticUrl + '/brython',
-        self.staticUrl + '/brython/site-packages',
     ]
     self.__BRYTHON__.brython({
         pythonpath: ['/__pythonpad_local__'].concat(data.paths).concat(paths),
