@@ -71,7 +71,6 @@ export default class BrythonRunner {
     }
 
     async handleMessage(msg) {
-        // console.log('brython message', msg)
         switch (msg.data.type) {
             case 'brython.init':
                 this.onInit()
@@ -79,6 +78,9 @@ export default class BrythonRunner {
 
             case 'done':
                 this.done(msg.data.exit)
+                // Restart runner worker.
+                this.worker.terminate()
+                this.initWorker()
                 break
 
             case 'stdout.write':
