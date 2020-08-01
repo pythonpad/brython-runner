@@ -370,3 +370,5 @@ def open(file, mode='r', buffering=-1, encoding=None, errors=None, newline=None,
         return PythonpadTextIOWrapper(file, target_file, mode, newline=newline)
 
 browser.self.openFile = open
+browser.self.isFileExist = exists
+browser.self.getFileDict = get_file
