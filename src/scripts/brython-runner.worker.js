@@ -20,6 +20,9 @@ async function init(data) {
     for (const rawModule of data.initModules) {
         eval.call(null, rawModule)
     }
+    for (const rawModule of data.postInitModules) {
+        eval.call(null, rawModule)
+    }
     var paths = [
         self.staticUrl + '/brython/lib',
         self.staticUrl + '/brython',

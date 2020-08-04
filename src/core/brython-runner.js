@@ -17,6 +17,7 @@ export default class BrythonRunner {
             codeCwd: '.',
             staticUrl: '/static',
             paths: [],
+            postInitModules: [],
             postInitScripts: [],
             files: {},
             debug: 0,
@@ -66,6 +67,7 @@ export default class BrythonRunner {
                 brythonModule,
                 brythonStdlibModule,
             ],
+            postInitModules: this.postInitModules,
             initScripts: [
                 stdioSrc,
                 sleepSrc,
