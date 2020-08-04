@@ -19,6 +19,12 @@ class PythonpadTextIOWrapper(io.IOBase):
         if 'a' not in mode:
             self.stream.seek(0)
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.close()
+
     def __str__(self):
         return '<PythonpadTextIOWrapper name=\'%s\' mode=\'%s\' encoding=\'UTF-8\'>' % (self.filename, self.mode)
 
@@ -149,6 +155,12 @@ class PythonpadBytesIOWrapper(io.BufferedIOBase):
         self.mode = mode
         if 'a' not in mode:
             self.stream.seek(0)
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.close()
 
     def __str__(self):
         return '<PythonpadBytesIOWrapper name=\'%s\' mode=\'%s\'>' % (self.filename, self.mode)
