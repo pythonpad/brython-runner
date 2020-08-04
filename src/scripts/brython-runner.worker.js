@@ -39,7 +39,7 @@ function init(data) {
     for (var i = 0; i < data.postInitScripts.length; i++) {
         run(data.postInitScripts[i])
     }
-    this.postMessage({
+    self.postMessage({
         type: 'brython.init',
         value: '',
     })
@@ -61,7 +61,7 @@ function setFiles(files) {
 function filesUpdated(filename, type, body) {
     if (!type && !body) {
         delete self.filesObj[filename]
-        this.postMessage({
+        self.postMessage({
             type: 'file.delete',
             value: filename,
         })
@@ -70,7 +70,7 @@ function filesUpdated(filename, type, body) {
             type: type,
             body: body,
         }
-        this.postMessage({
+        self.postMessage({
             type: 'file.update',
             value: {
                 filename: filename,
@@ -99,7 +99,7 @@ function getInput(message) {
 
     var key = req.responseText
 
-    this.postMessage({
+    self.postMessage({
         type: 'stdin.readline',
         value: key,
     })
@@ -144,13 +144,13 @@ function getElementsByTagName(tagName) {
 function initMsgSenders() {
     self.stdoutWrite = function (data) {
         self.prevErrOut = null
-        this.postMessage({
+        self.postMessage({
             type: 'stdout.write',
             value: data,
         })
     }
     self.stdoutFlush = function () {
-        this.postMessage({
+        self.postMessage({
             type: 'stdout.flush',
         })
     }
@@ -159,18 +159,18 @@ function initMsgSenders() {
             return // Skip duplicated error message.
         }
         self.prevErrOut = data
-        this.postMessage({
+        self.postMessage({
             type: 'stderr.write',
             value: data,
         })
     }
     self.stderrFlush = function () {
-        this.postMessage({
+        self.postMessage({
             type: 'stderr.flush',
         })
     }
     self.sendMsg = function (type, value) {
-        postMessage({
+        self.postMessage({
             type: type,
             value: value,
         })
