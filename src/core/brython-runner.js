@@ -1,6 +1,9 @@
+import brythonModule from '!!raw-loader!../../static/brython/brython.js'
+import brythonStdlibModule from '!!raw-loader!../../static/brython/brython_stdlib.js'
 import stdioSrc from '!!raw-loader!../scripts/stdio.py'
 import sleepSrc from '!!raw-loader!../scripts/sleep.py'
 import fileioSrc from '!!raw-loader!../scripts/fileio.py'
+import BrythonRunnerWorker from '!!worker-loader!../scripts/brython-runner.worker.js';
 
 export default class BrythonRunner {
     constructor(params) {
@@ -51,7 +54,7 @@ export default class BrythonRunner {
     }
 
     initWorker() {
-        this.worker = new Worker(`${this.staticUrl}/brython-runner.worker.js`);
+        this.worker = new BrythonRunnerWorker();
         this.worker.postMessage({
             type: 'init',
             debug: this.debug,
@@ -59,6 +62,10 @@ export default class BrythonRunner {
             codeCwd: this.codeCwd,
             staticUrl: this.staticUrl,
             paths: this.paths,
+            initModules: [
+                brythonModule,
+                brythonStdlibModule,
+            ],
             initScripts: [
                 stdioSrc,
                 sleepSrc,
@@ -136,6 +143,7 @@ export default class BrythonRunner {
     }
 
     runCode(code) {
+        console.log('run')
         return new Promise(resolve => {
             this.done = exit => resolve(exit)
             this.worker.postMessage({

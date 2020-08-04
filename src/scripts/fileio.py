@@ -1,8 +1,6 @@
-import base64
 import browser
 import io
 import os
-
 
 def set_files_from_obj():
     browser.self.files = browser.self.filesObj.to_dict()
@@ -148,6 +146,8 @@ class PythonpadTextIOWrapper(io.IOBase):
 
 class PythonpadBytesIOWrapper(io.BufferedIOBase):
     def __init__(self, filename, target_file, mode):
+        global base64
+        import base64
         self.stream = io.BytesIO()
         self.stream.write(base64.b64decode(target_file['body']))
         self.filename = filename

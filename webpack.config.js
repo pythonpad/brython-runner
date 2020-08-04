@@ -32,6 +32,6 @@ module.exports = mode => ({
         hot: true,
         historyApiFallback: true,
         contentBase: '.',
-        publicPath: '/assets/',
+        publicPath: '/lib/',
     },
 });
