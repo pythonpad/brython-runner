@@ -44,9 +44,6 @@ class PythonpadTextIOWrapper(io.IOBase):
     def __eq__(self, other):
         return self.stream.__eq__(other.stream)
 
-    def __exit__(self):
-        return self.stream.__exit__()
-
     def __format__(self, format_spec):
         return self.stream.__format__(format_spec)
 
@@ -179,9 +176,6 @@ class PythonpadBytesIOWrapper(io.BufferedIOBase):
 
     def __eq__(self, other):
         return self.stream.__eq__(other.stream)
-
-    def __exit__(self):
-        return self.stream.__exit__()
 
     def __format__(self, format_spec):
         return self.stream.__format__(format_spec)
