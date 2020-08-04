@@ -3,7 +3,6 @@ import brythonStdlibModule from '!!raw-loader!../../static/brython/brython_stdli
 import stdioSrc from '!!raw-loader!../scripts/stdio.py'
 import sleepSrc from '!!raw-loader!../scripts/sleep.py'
 import fileioSrc from '!!raw-loader!../scripts/fileio.py'
-import BrythonRunnerWorker from '!!worker-loader!../scripts/brython-runner.worker.js';
 
 export default class BrythonRunner {
     constructor(params) {
@@ -55,7 +54,7 @@ export default class BrythonRunner {
     }
 
     initWorker() {
-        this.worker = new BrythonRunnerWorker();
+        this.worker = new Worker(`${this.staticUrl}/brython-runner.worker.js`);
         this.worker.postMessage({
             type: 'init',
             debug: this.debug,
