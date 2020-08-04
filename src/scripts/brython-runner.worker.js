@@ -1,4 +1,4 @@
-async function init(data) {
+function init(data) {
     self.window = self
     self.runType = 'code'
     self.code = ''
@@ -256,7 +256,7 @@ function done(exit) {
 }
 
 onmessage = function (message) {
-    data = message.data
+    var data = message.data
     switch (data.type) {
         case 'init':
             init(data)
