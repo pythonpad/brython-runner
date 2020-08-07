@@ -4,7 +4,7 @@ import time
 def __sleep__(duration):
     # Busy wait with server-aided wait.
     target_ts = time.time() + duration
-    if duration > 2:
+    if duration > 3 and browser.self.hangerUrl:
         # Server-aided wait.
         browser.self.hangSleep(duration - 1)
     # Busy wait

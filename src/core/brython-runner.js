@@ -15,6 +15,7 @@ export default class BrythonRunner {
             codeName: 'main.py',
             codeCwd: '.',
             staticUrl: '/static',
+            hangerUrl: '/hanger',
             paths: [],
             postInitModules: [],
             postInitScripts: [],
@@ -61,6 +62,7 @@ export default class BrythonRunner {
             codeName: this.codeName,
             codeCwd: this.codeCwd,
             staticUrl: this.staticUrl,
+            hangerUrl: this.hangerUrl,
             paths: this.paths,
             initModules: [
                 brythonModule,

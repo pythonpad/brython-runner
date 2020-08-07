@@ -9,6 +9,7 @@ function init(data) {
         getElementsByTagName: getElementsByTagName,
     }
     self.staticUrl = data.staticUrl
+    self.hangerUrl = data.hangerUrl
     self.filesObj = data.files
     self.importLocalFile = importLocalFile
     self.filesUpdated = filesUpdated
@@ -84,12 +85,16 @@ function filesUpdated(filename, type, body) {
 }
 
 function getInput(message) {
+    if (self.hangerUrl === null) {
+        self.raiseInputError()
+        return ''
+    }
     if (message) {
         self.stdoutWrite(message + '')
         self.stdoutFlush()
     }
     var req = new XMLHttpRequest()
-    req.open('POST', '/hanger/open/', false)
+    req.open('POST', self.hangerUrl + '/open/', false)
     req.send('')
 
     if (req.status !== 200) {
@@ -105,7 +110,7 @@ function getInput(message) {
     })
 
     req = new XMLHttpRequest()
-    req.open('POST', '/hanger/' + key + '/read/', false)
+    req.open('POST', self.hangerUrl + '/' + key + '/read/', false)
     req.send('')
 
     if (req.status !== 200) {
@@ -118,7 +123,7 @@ function getInput(message) {
 
 function hangSleep(duration) {
     var req = new XMLHttpRequest()
-    req.open('GET', '/hanger/sleep/?duration=' + duration, false)
+    req.open('GET', self.hangerUrl + '/sleep/?duration=' + duration, false)
     req.send(null)
 }
 
