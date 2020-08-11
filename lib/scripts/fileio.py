@@ -309,23 +309,37 @@ def files_updated(path):
 
 def normalize_path(path):
     normalized_path = os.path.normpath(path)
-    if '/' in normalized_path:
-        raise NotImplementedError('directory structure is not supported in Pythonpad')
+    if normalized_path.startswith('/'):
+        raise NotImplementedError('absolute path is not supported in Pythonpad')
+    elif normalized_path.startswith('../'):
+        raise NotImplementedError('accessing out of the project is not supported in Pythonpad')
     return normalized_path
 
 def exists(path):
-    return normalize_path(path) in browser.self.files
+    normalized_path = normalize_path(path)
+    return (normalized_path in browser.self.files) or ((normalized_path + '/') in browser.self.files)
+
+def is_dir(path):
+    dir_path = normalize_path(path) + '/'
+    return dir_path in browser.self.files
 
 def get_file(path):
     return browser.self.files[normalize_path(path)]
 
 def create_file(path, file_type=None, body=None):
+    normalized_path = normalize_path(path)
+    if '/' in normalized_path:
+        tokens = normalized_path.split('/')
+        parent_path = '/'.join(tokens[:-1]
+        if (parent_path + '/') not in browser.self.files:
+            # No parent directory.
+            raise FileNotFoundError('No such file or directory: \'%s\'' % path)
     file = {
         'type': 'text' if file_type is None else file_type,
         'body': '' if body is None else body,
     }
-    browser.self.files[normalize_path(path)] = file
-    files_updated(normalize_path(path))
+    browser.self.files[normalized_path] = file
+    files_updated(normalized_path)
     return file
 
 def open(file, mode='r', buffering=-1, encoding=None, errors=None, newline=None, closefd=True, opener=None):
@@ -335,6 +349,9 @@ def open(file, mode='r', buffering=-1, encoding=None, errors=None, newline=None,
             count += 1
     if count != 1:
         raise ValueError('must have exactly one of create/read/write/append mode')
+    
+    if is_dir(file):
+        raise IsADirectoryError('Is a directory: \'%s\'' % file)
 
     if 'b' in mode:
         if 'r' in mode:
