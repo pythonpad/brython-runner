@@ -309,8 +309,10 @@ def files_updated(path):
 
 def normalize_path(path):
     normalized_path = os.path.normpath(path)
-    if '/' in normalized_path:
-        raise NotImplementedError('directory structure is not supported in Pythonpad')
+    if normalized_path.startswith('/'):
+        raise NotImplementedError('absolute path is not supported in Pythonpad')
+    elif normalized_path.startswith('../'):
+        raise NotImplementedError('accessing out of the project is not supported in Pythonpad')
     return normalized_path
 
 def exists(path):
