@@ -330,7 +330,7 @@ def create_file(path, file_type=None, body=None):
     normalized_path = normalize_path(path)
     if '/' in normalized_path:
         tokens = normalized_path.split('/')
-        parent_path = '/'.join(tokens[:-1]
+        parent_path = '/'.join(tokens[:-1])
         if (parent_path + '/') not in browser.self.files:
             # No parent directory.
             raise FileNotFoundError('No such file or directory: \'%s\'' % path)
