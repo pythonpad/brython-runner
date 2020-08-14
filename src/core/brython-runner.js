@@ -148,7 +148,7 @@ export default class BrythonRunner {
 
     writeInputData(key, data) {
         var xhr = new XMLHttpRequest()
-        xhr.open('POST', `/hanger/${key}/write/`, true)
+        xhr.open('POST', `${this.hangerUrl}/${key}/write/`, true)
         xhr.onload = e => {
             if (xhr.readyState === 4) {
                 if (xhr.status === 200) {
