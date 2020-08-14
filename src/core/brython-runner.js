@@ -1,3 +1,4 @@
+import brythonRunnerWorkerSrc from '!!raw-loader!../../static/brython-runner.worker.js'
 import brythonModule from '!!raw-loader!../../static/brython/brython.js'
 import brythonStdlibModule from '!!raw-loader!../../static/brython/brython_stdlib.js'
 import stdioSrc from '!!raw-loader!../scripts/stdio.py'
@@ -54,8 +55,26 @@ export default class BrythonRunner {
         }
     }
 
+    createWorker() {
+        if (this.staticUrl) {
+            this.worker = new Worker(`${this.staticUrl}/brython-runner.worker.js`)
+        } else {
+            window.URL = window.URL || window.webkitURL
+            let blob;
+            try {
+                blob = new Blob([brythonRunnerWorkerSrc], { type: 'application/javascript' })
+            } catch (e) {
+                window.BlobBuilder = window.BlobBuilder || window.WebKitBlobBuilder || window.MozBlobBuilder
+                blob = new BlobBuilder()
+                blob.append(brythonRunnerWorkerSrc)
+                blob = blob.getBlob()
+            }
+            this.worker = new Worker(URL.createObjectURL(blob));
+        }
+    }
+
     initWorker() {
-        this.worker = new Worker(`${this.staticUrl}/brython-runner.worker.js`);
+        this.createWorker()
         this.worker.postMessage({
             type: 'init',
             debug: this.debug,

@@ -24,10 +24,10 @@ function init(data) {
     for (const rawModule of data.postInitModules) {
         eval.call(null, rawModule)
     }
-    var paths = [
+    var paths = self.staticUrl ? [
         self.staticUrl + '/brython/lib',
         self.staticUrl + '/brython',
-    ]
+    ] : []
     self.__BRYTHON__.brython({
         pythonpath: ['/__pythonpad_local__'].concat(data.paths).concat(paths),
         debug: data.debug || 0,
