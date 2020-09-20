@@ -1534,6 +1534,11 @@ browserslist@^4.12.0, browserslist@^4.8.5:
     node-releases "^1.1.53"
     pkg-up "^2.0.0"
 
+brython@^3.8.10:
+  version "3.8.10"
+  resolved "https://registry.yarnpkg.com/brython/-/brython-3.8.10.tgz#f27789dd26827559c490629538a26fbdf293df95"
+  integrity sha512-tFywZH5YmBLyZO/c5j/LRjLqrvohPVpw9rlNqHlIODEgnDrClBtgKljB1gDZkfKpWUOy/s2QPyqaD4i/eyJD9g==
+
 buffer-equal@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/buffer-equal/-/buffer-equal-1.0.0.tgz#59616b498304d556abd466966b22eeda3eca5fbe"

@@ -1,9 +1,47 @@
-import brythonRunnerWorkerSrc from '!!raw-loader!../../static/brython-runner.worker.js'
-import brythonModule from '!!raw-loader!../../static/brython/brython.js'
-import brythonStdlibModule from '!!raw-loader!../../static/brython/brython_stdlib.js'
+import brythonRunnerWorkerSrc from '!!raw-loader!./brython-runner.worker.js'
+import brythonModule from '!!raw-loader!brython/brython.js'
+import brythonStdlibModule from '!!raw-loader!brython/brython_stdlib.js'
 import stdioSrc from '!!raw-loader!../scripts/stdio.py'
 import sleepSrc from '!!raw-loader!../scripts/sleep.py'
 import fileioSrc from '!!raw-loader!../scripts/fileio.py'
+
+const DEFAULT_PARAMS = {
+    codeName: 'main.py',
+    codeCwd: '.',
+    staticUrl: null, //'/static',
+    hangerUrl: null, //'/hanger',
+    paths: [],
+    postInitModules: [],
+    postInitScripts: [],
+    files: {},
+    debug: 0,
+    stdout: {
+        write(content) {
+            console.log(content)
+        },
+        flush() { },
+    },
+    stderr: {
+        write(content) {
+            console.error(content)
+        },
+        flush() { },
+    },
+    stdin: {
+        async readline() {
+            return prompt();
+        },
+    },
+    onInit() {
+        console.log('Brython runner is ready.')
+    },
+    onFileUpdate(filename, data) {
+        console.log('Brython runner has an updated file:', filename, data)
+    },
+    onMsg(type, value) {
+        console.log('Brython runner got a message:', type, value)
+    },
+}
 
 export default class BrythonRunner {
     constructor(params) {
@@ -13,68 +51,16 @@ export default class BrythonRunner {
 
     setParamValues(params) {
         const values = {
-            codeName: 'main.py',
-            codeCwd: '.',
-            staticUrl: '/static',
-            hangerUrl: '/hanger',
-            paths: [],
-            postInitModules: [],
-            postInitScripts: [],
-            files: {},
-            debug: 0,
-            stdout: {
-                write(content) {
-                    console.log(content)
-                },
-                flush() { },
-            },
-            stderr: {
-                write(content) {
-                    console.error(content)
-                },
-                flush() { },
-            },
-            stdin: {
-                async readline() {
-                    return prompt();
-                },
-            },
-            onInit() {
-                console.log('Brython runner is ready.')
-            },
-            onFileUpdate(filename, data) {
-                console.log('File got updated:', filename, data)
-            },
-            onMsg(type, value) {
-                console.log('Got a message:', type, value)
-            },
-            ...params
+            ...DEFAULT_PARAMS,
+            ...params,
         }
         for (const key of Object.keys(values)) {
             this[key] = values[key]
         }
     }
 
-    createWorker() {
-        if (this.staticUrl) {
-            this.worker = new Worker(`${this.staticUrl}/brython-runner.worker.js`)
-        } else {
-            window.URL = window.URL || window.webkitURL
-            let blob;
-            try {
-                blob = new Blob([brythonRunnerWorkerSrc], { type: 'application/javascript' })
-            } catch (e) {
-                window.BlobBuilder = window.BlobBuilder || window.WebKitBlobBuilder || window.MozBlobBuilder
-                blob = new BlobBuilder()
-                blob.append(brythonRunnerWorkerSrc)
-                blob = blob.getBlob()
-            }
-            this.worker = new Worker(URL.createObjectURL(blob));
-        }
-    }
-
     initWorker() {
-        this.createWorker()
+        this.worker = this.createWorker()
         this.worker.postMessage({
             type: 'init',
             debug: this.debug,
@@ -99,6 +85,20 @@ export default class BrythonRunner {
         this.worker.onmessage = msg => this.handleMessage(msg)
     }
 
+    createWorker() {
+        window.URL = window.URL || window.webkitURL
+        let blob;
+        try {
+            blob = new Blob([brythonRunnerWorkerSrc], { type: 'application/javascript' })
+        } catch (e) {
+            window.BlobBuilder = window.BlobBuilder || window.WebKitBlobBuilder || window.MozBlobBuilder
+            blob = new BlobBuilder()
+            blob.append(brythonRunnerWorkerSrc)
+            blob = blob.getBlob()
+        }
+        return new Worker(URL.createObjectURL(blob))
+    }
+
     async handleMessage(msg) {
         switch (msg.data.type) {
             case 'brython.init':
@@ -107,9 +107,7 @@ export default class BrythonRunner {
 
             case 'done':
                 this.done(msg.data.exit)
-                // Restart runner worker.
-                this.worker.terminate()
-                this.initWorker()
+                this.restartWorker()
                 break
 
             case 'stdout.write':
@@ -165,7 +163,6 @@ export default class BrythonRunner {
     }
 
     runCode(code) {
-        console.log('run')
         return new Promise(resolve => {
             this.done = exit => resolve(exit)
             this.worker.postMessage({
@@ -207,6 +204,10 @@ export default class BrythonRunner {
         if (this.hangerKey) {
             this.writeInputData(this.hangerKey, '')
         }
+        this.restartWorker()
+    }
+
+    restartWorker() {
         this.worker.terminate()
         this.initWorker()
     }

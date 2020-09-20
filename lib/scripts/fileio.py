@@ -3,9 +3,9 @@ import io
 import os
 
 def set_files_from_obj():
-    browser.self.files = browser.self.filesObj.to_dict()
+    browser.self._brFiles = browser.self._brFilesObj.to_dict()
 set_files_from_obj()
-browser.self.setFilesFromObj = set_files_from_obj
+browser.self._brSetFilesFromObj = set_files_from_obj
 
 class PythonpadTextIOWrapper(io.IOBase):
     def __init__(self, filename, target_file, mode, newline=None):
@@ -302,10 +302,10 @@ class PythonpadBytesIOWrapper(io.BufferedIOBase):
         return self.stream.closed()
 
 def files_updated(path):
-    if path in browser.self.files:
-        browser.self.filesUpdated(path, browser.self.files[path]['type'], browser.self.files[path]['body'])
+    if path in browser.self._brFiles:
+        browser.self._brFilesUpdated(path, browser.self._brFiles[path]['type'], browser.self._brFiles[path]['body'])
     else:
-        browser.self.filesUpdated(path, None, None)
+        browser.self._brFilesUpdated(path, None, None)
 
 def normalize_path(path):
     normalized_path = os.path.normpath(path)
@@ -317,28 +317,28 @@ def normalize_path(path):
 
 def exists(path):
     normalized_path = normalize_path(path)
-    return (normalized_path in browser.self.files) or ((normalized_path + '/') in browser.self.files)
+    return (normalized_path in browser.self._brFiles) or ((normalized_path + '/') in browser.self._brFiles)
 
 def is_dir(path):
     dir_path = normalize_path(path) + '/'
-    return dir_path in browser.self.files
+    return dir_path in browser.self._brFiles
 
 def get_file(path):
-    return browser.self.files[normalize_path(path)]
+    return browser.self._brFiles[normalize_path(path)]
 
 def create_file(path, file_type=None, body=None):
     normalized_path = normalize_path(path)
     if '/' in normalized_path:
         tokens = normalized_path.split('/')
         parent_path = '/'.join(tokens[:-1])
-        if (parent_path + '/') not in browser.self.files:
+        if (parent_path + '/') not in browser.self._brFiles:
             # No parent directory.
             raise FileNotFoundError('No such file or directory: \'%s\'' % path)
     file = {
         'type': 'text' if file_type is None else file_type,
         'body': '' if body is None else body,
     }
-    browser.self.files[normalized_path] = file
+    browser.self._brFiles[normalized_path] = file
     files_updated(normalized_path)
     return file
 
@@ -392,6 +392,6 @@ def open(file, mode='r', buffering=-1, encoding=None, errors=None, newline=None,
             raise NotImplementedError('opening byte file in text mode is not implemented in Pythonpad')
         return PythonpadTextIOWrapper(file, target_file, mode, newline=newline)
 
-browser.self.openFile = open
-browser.self.isFileExist = exists
-browser.self.getFileDict = get_file
+browser.self._brOpenFile = open
+browser.self._brIsFileExist = exists
+browser.self._brGetFileDict = get_file
