@@ -47,6 +47,7 @@ function _brRunModuleScripts(data) {
 }
 
 function _brInitBrython(data) {
+    self.XMLHttpRequest = _brXHR;
     self.__BRYTHON__.brython({
         pythonpath: [self._brLocalPathPrefix].concat(data.paths),
         debug: data.debug || 0,
@@ -286,6 +287,70 @@ function _brRunCallback(exit) {
         type: 'done',
         exit,
     });
+}
+
+class _brXHR extends XMLHttpRequest {
+    constructor() {
+        super();
+        this.localPrefix = self._brLocalPathPrefix + '/';
+        this.localRequestOpened = false;
+        this.localRequestSent = false;
+        this.localResponseText = null;
+    }
+
+    open(...params) {
+        if (params.length > 1) {
+            const url = params[1];
+            if (url.startsWith(this.localPrefix)) {
+                const localPath = url.slice(this.localPrefix.length, url.indexOf('?'));
+                this.localResponseText = _brImportLocalFile(localPath);
+                this.localRequestOpened = true;
+                // TODO: Call onreadystatechange.
+                return;
+            }
+        }
+        return super.open(...params);
+    }
+
+    send(...params) {
+        if (this.localRequestOpened) {
+            this.localRequestSent = true;
+        } else {
+            return super.send(...params);
+        }
+    }
+
+    get status() {
+        if (this.localRequestOpened) {
+            if (this.localResponseText === null) {
+                return 404;
+            } else {
+                return 200;
+            }
+        } else {
+            return super.status;
+        }
+    }
+
+    get readyState() {
+        if (this.localRequestOpened) {
+            if (this.localRequestSent) {
+                return 4;
+            } else {
+                return 1;
+            }
+        } else {
+            return super.readyState;
+        }
+    }
+
+    get responseText() {
+        if (this.localRequestOpened) {
+            return this.localResponseText;
+        } else {
+            return super.responseText;
+        }
+    }
 }
 
 self.onmessage = function (message) {
