@@ -1,9 +1,5 @@
-
-# Mac OS X
-.DS_Store
-
-# Built result
-lib/
+# Ignore the source files
+src/
 
 # Logs
 logs
