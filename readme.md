@@ -46,19 +46,30 @@ The simple way to use it in a browser:
 </script>
 ```
 
-### Node.js
+### Webpack
 
-It also works within a CommonJS environment.
+You can directly require the module if you're using webpack to bundle your project.
 For example:
 
 ```javascript
 var BrythonRunner = require('brython-runner/lib/brython-runner.js').default;
 ```
 
-or with `import` syntax, 
+or with `import` syntax:
 
 ```javascript
 import BrythonRunner from 'brython-runner/lib/brython-runner.js';
+```
+
+#### Note
+
+The core source of `BrythonRunner` uses [raw-loader](https://webpack.js.org/loaders/raw-loader/) for importing JavaScript and Python scripts as String values. If your working in non-webpack CommonJS environment, be sure to handle import statements with prefix `!!raw-loader!` in the source. 
+For example:
+
+```javascript
+import stdioSrc from '!!raw-loader!../scripts/stdio.py'
+import sleepSrc from '!!raw-loader!../scripts/sleep.py'
+import fileioSrc from '!!raw-loader!../scripts/fileio.py'
 ```
 
 ## Usage Examples

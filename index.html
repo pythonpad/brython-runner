@@ -55,7 +55,7 @@
         }
         const codeStoreKey = 'brython-runner-dev-code'
         const loadedCode = localStorage.getItem(codeStoreKey)
-        const code = loadedCode || ''
+        const code = loadedCode || 'print("hello world")'
         const editor = CodeMirror(document.getElementById('editor'), {
             ...CODEMIRROR_OPTIONS,
             mode: 'python',

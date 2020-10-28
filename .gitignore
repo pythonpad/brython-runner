@@ -2,9 +2,6 @@
 # Mac OS X
 .DS_Store
 
-# Built result
-lib/
-
 # Logs
 logs
 *.log
