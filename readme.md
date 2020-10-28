@@ -6,6 +6,10 @@ Brython is designed to replace JavaScript in the Web; it allows you to use Pytho
 
 However, if you want to run *user-written Python code* in your web application, it's not so simple to do so. Use **Brython Runner** for that.
 
+## Demo
+
+See our [demo page](https://pythonpad.github.io/brython-runner/) to see `brython-runner` in action.
+
 ## Installation
 
 ### Node.js
