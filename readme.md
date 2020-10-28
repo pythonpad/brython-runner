@@ -1,50 +1,55 @@
 # Brython Runner
 
-This is a JavaScript library to run Python 3 code on client browser using [Brython](https://brython.info/). 
+A JavaScript library that runs Python 3 code on web browsers based on [Brython](https://brython.info/). 
 
-## Development
+Brython is designed to replace JavaScript in the Web; it allows you to use Python 3 instead of JavaScript as the scripting language for your web application. Brython does that by translating Python code into the equivalent JavaScript code.
 
-Before running any scripts, install Node and Yarn on your system.
+However, if you want to run *user-written Python code* in your web application, it's not so simple to do so. Use **Brython Runner** for that.
 
-To install all dependencies, run: 
+## Installation
 
-```
-$ yarn install
-```
-
-To serve the example web page for development, run:
+### Node.js
 
 ```
-$ yarn dev
+$ npm install brython-runner
 ```
 
-Check out http://localhost:4000 on your web browser to see the example web page.
+## Usage
 
-To build the library, run:
+### Browser
 
-```
-$ yarn build
-```
-
-Remember to build-and-commit when you update the project. 
-
-## Import and Use
-
-### Basic usage
-
-The easiest way to use **Brython Runner** is to simply load the bundle script under `./lib` in the distribution. For example:
+The simple way to use it in a browser:
 
 ```html
 <script src="lib/brython-runner.bundle.js"></script>
+<script>
+    async function runPythonCode() {
+        const runner = new BrythonRunner({
+            stdout: {
+                write(content) {
+                    console.log('StdOut: ' + content);
+                },
+                flush() {},
+            },
+            stderr: {
+                write(content) {
+                    console.error('StdErr: ' + content);
+                },
+                flush() {},
+            }
+        });
+        console.log('Run Code:');
+        await runner.runCode('print("hello world")\nprint("from Brython Runner")');
+        console.log('Done.');
+    }
+    runPythonCode();
+</script>
 ```
 
-Having this script tag, a Brython Runner instance can be created like this:
+### Node.js
 
-```javascript
-var runner = new BrythonRunner();
-```
-
-If you want to use brython-runner.js in CommonJS environment, you can require the BrythonRunner class from `./lib/elixercise.js`. For example:
+It also works within a CommonJS environment.
+For example:
 
 ```javascript
 var BrythonRunner = require('brython-runner/lib/brython-runner.js').default;
@@ -56,82 +61,66 @@ or with `import` syntax,
 import BrythonRunner from 'brython-runner/lib/brython-runner.js';
 ```
 
-For a working example, run `$ yarn dev` script and check out the example web page. This shows the `./index.html` file rendered on the browser with all dependencies ready.
+## Usage Examples
 
-### BrythonRunner
-
-`BrythonRunner` class allows you to run Python 3 code based on Brython's python-to-javascript transpiler. 
-
-#### `var runner = new BrythonRunner(options)`
-
-`BrythonRunner` class stores the running environment for your Python code and allows you to run the code using Brython library. Available options are described below. 
+### Simple
 
 ```javascript
-var options = {
-    codeName: 'main.py', 
-    codeCwd: '.',
-    staticUrl: '/static',
-    paths: [],
-    postInitScripts: [
-        'import brythonsync',
-    ],
+const runner = new BrythonRunner({
     stdout: {
         write(content) {
-            console.log(content)
+            console.log('StdOut: ' + content);
         },
-        flush() { },
+        flush() {},
     },
     stderr: {
         write(content) {
-            console.error(content)
+            console.error('StdErr: ' + content);
         },
-        flush() { },
-    },
-    onMsg(type, value) {
-        console.log('Got a message:', type, value)
+        flush() {},
     }
-};
+});
+await runner.runCode('print("hello world")');
 ```
 
-These are the default value of accepted option values.
+### Debug Level
 
-*codeFilename*
+Set `debug` option to explicitly set the debug level for Brython. See [this page](https://brython.info/static_doc/en/options.html) from the Brython website for more information.
 
-When you run Python code with `runner.runCode()`, this will be used as `__name__` and also shown as a filename in error message. 
+- 0 (default) : no debugging. Use this when the application is debugged, it slightly speeds up execution
+- 1 : error messages are printed in the browser console (or to the output stream specified by sys.stderr)
+- 2 : the translation of Python code into Javascript code is printed in the console
+- 10 : the translation of Python code and of the imported modules is printed in the console
 
-*codeCwd*
-
-This will be shown as a path of the executed file in error message.
-
-*staticUrl*
-
-Brython requires essential files to be accessible from the server. Serve the `./static` directory within the same domain (CORS) and provide the path to the directory as `staticUrl`. 
-
-*paths*
-
-Add paths for additional dependencies. The paths provided here will be included in `sys.path`.
-
-*postInitScripts*
-
-These Python codes are run after initializing the runner session. 
-
-*stdout*
-
-Provide an object with `write(content)` and `flush()` functions. This will be used when data comes out from the standard output stream.
-
-*stderr*
-
-Provide an object with `write(content)` and `flush()` functions. This will be used when data comes out from the standard error stream.
-
-*onMsg*
-
-This function will be called when a message with a non-predefined type is received from the Brython runner worker. `type` and `value` parameter will be provided.
-
-#### `async runner.runCode(src)`
-
-This tells the Brython runner instance to run the Python code content in `src`. The runner will run the given code using web worker, and send data to `stdout` and `stderr` stream when requested. 
-
-**Example**
 ```javascript
-await runner.runCode('print("hello world")');
-console.log(`says the Python code.`);
+const runner = new BrythonRunner({ debug: 10 });
+```
+
+### Init Callback
+
+Use `onInit` option to set a function that is called after the web worker initialization. 
+
+```javascript
+const runner = new BrythonRunner({
+    onInit() {
+        console.log('Runner web worker is ready!');
+    },
+});
+```
+
+## Development
+
+To serve the exmaple web page for development, run:
+
+```
+$ npm dev
+```
+
+Check out http://localhost:4000 on your web browser to see the example web page.
+
+To build the library, run:
+
+```
+$ npm build
+```
+
