@@ -18,7 +18,6 @@ function _brSetValues(data) {
     self._brCodeCwd = data.codeCwd;
     self._brCode = '';
     self._brHangerUrl = data.hangerUrl;
-    self._brFilesObj = data.files;
     self._brImportLocalFile = _brImportLocalFile;
     self._brFilesUpdated = _brFilesUpdated;
     self._brHangSleep = _brHangSleep;

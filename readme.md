@@ -123,6 +123,50 @@ const runner = new BrythonRunner({
 });
 ```
 
+### Files
+
+Use `runCodeWithFiles` method with `onFileUpdate` option to provide files and directories for the Python code. 
+
+```javascript
+const files = {
+    'hello.py': {
+        'type': 'text',
+        'body': 'print("hello world")',
+    },
+    'data/': {
+        'type': 'dir',
+        'body': '',
+    },
+    'data/image.gif': {
+        'type': 'base64',
+        'body': 'R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
+    },
+    'main.py': {
+        'type': 'text',
+        'body': 'import hello\nf = open("data/image.gif", "rb")\nf.close()',
+    }
+};
+const runner = new BrythonRunner({
+    onFileUpdate(filename, data) {
+        files[filename].type = data.type;
+        files[filename].body = data.body;
+    },
+});
+runner.runCodeWithFiles(files['main.py'], files);
+```
+
+`BrythonRunner.runCodeWithFiles(code, files)` method runs Python `code` with given `files`. Files must be provided as a JavaScript object that contains each file or directory as a key-value pair. 
+
+An object key for a file or a folder represents a path to the file from a virtual *current working directory*. A path for a file should be normalized (`os.path.normpath(path) === path`) and should be inside the current working directory (e.g., `../file.txt` is not allowed). 
+If a path is for a **folder**, it should have a trailing slash added to a normalized path. See the `data/` folder in the example code.
+
+A value for a file or a folder should be a JavaScript object that contains values for the keys: `type` and `body`. 
+If it is a folder, `type` should be `'dir'` and `body` should be an empty string (`''`). If it is a file, two types are available: `'text'` and `'base64'`. 
+
+Files with `'text'` type should have string type content of the file as the `body` value. Files with `'base64'` type should have the content encoded in **base64** as the `body` value. 
+
+If the files are edited while running the code, a function given as `onFileUpdate` option is called. The path of the edited file is given as the first parameter (`filename`) and the data object with `type` and `body` values is given as the second parameter (`data`).
+
 ## Development
 
 To serve the exmaple web page for development, run:

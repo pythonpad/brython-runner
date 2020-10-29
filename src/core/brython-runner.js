@@ -80,7 +80,6 @@ export default class BrythonRunner {
                 fileioSrc,
             ],
             postInitScripts: this.postInitScripts,
-            files: this.files,
         })
         this.worker.onmessage = msg => this.handleMessage(msg)
     }
