@@ -46,6 +46,7 @@ function _brRunModuleScripts(data) {
 }
 
 function _brInitBrython(data) {
+    self.RealXMLHttpRequest = self.XMLHttpRequest
     self.XMLHttpRequest = _brXHR;
     self.__BRYTHON__.brython({
         pythonpath: [self._brLocalPathPrefix].concat(data.paths),
@@ -113,7 +114,7 @@ function _brFilesUpdated(filename, type, body) {
 }
 
 function _brGetInput(message) {
-    if (self.hangerUrl === null) {
+    if (self._brHangerUrl === null) {
         self._brRaiseInputError();
         return '';
     }
@@ -121,8 +122,9 @@ function _brGetInput(message) {
         self._brStdoutWrite(message + '');
         self._brStdoutFlush();
     }
-    var req = new XMLHttpRequest();
-    req.open('POST', self.hangerUrl + '/open/', false);
+    var req = new RealXMLHttpRequest();
+    console.log('URL', self._brHangerUrl + '/open/');
+    req.open('POST', self._brHangerUrl + '/open/', false);
     req.send('');
 
     if (req.status !== 200) {
@@ -137,8 +139,8 @@ function _brGetInput(message) {
         value: key,
     });
 
-    req = new XMLHttpRequest();
-    req.open('POST', self.hangerUrl + '/' + key + '/read/', false);
+    req = new RealXMLHttpRequest();
+    req.open('POST', self._brHangerUrl + '/' + key + '/read/', false);
     req.send('');
 
     if (req.status !== 200) {
@@ -150,7 +152,7 @@ function _brGetInput(message) {
 }
 
 function _brHangSleep(duration) {
-    var req = new XMLHttpRequest();
+    var req = new RealXMLHttpRequest();
     req.open('GET', self._brHangerUrl + '/sleep/?duration=' + duration, false);
     req.send(null);
 }

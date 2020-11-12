@@ -8,7 +8,9 @@ However, if you want to run *user-written Python code* in your web application, 
 
 ## Demo
 
-See our [demo page](https://pythonpad.github.io/brython-runner/) to see `brython-runner` in action.
+See how [Pythonpad](https://www.pythonpad.co/pads/new/) runs user-written Python 3 code on the browser with Brython Runner; it supports `input()`, `time.sleep(x)`, and file system with local `.py` import feature. 
+
+If you need a simple example, see our [demo page](https://pythonpad.github.io/brython-runner/) and see `brython-runner` in action.
 
 ## Installation
 
@@ -40,6 +42,13 @@ The simple way to use it in a browser:
                     console.error('StdErr: ' + content);
                 },
                 flush() {},
+            },
+            stdin: {
+                async readline() {
+                    var userInput = prompt();
+                    console.log('Received StdIn: ' + userInput);
+                    return userInput;
+                },
             }
         });
         console.log('Run Code:');
@@ -93,6 +102,13 @@ const runner = new BrythonRunner({
             console.error('StdErr: ' + content);
         },
         flush() {},
+    },
+    stdin: {
+        async readline() {
+            var userInput = prompt();
+            console.log('Received StdIn: ' + userInput);
+            return userInput;
+        },
     }
 });
 await runner.runCode('print("hello world")');
@@ -122,6 +138,22 @@ const runner = new BrythonRunner({
     },
 });
 ```
+
+### Standard Input
+
+Brython Runner requires a *hanger* server to support Python's `input()` function in the web worker environment. 
+
+A Brython Runner instance will use the *hanger* server instance served for the [Pythonpad](https://www.pythonpad.co/) service on default settings. 
+However, you can serve your own *hanger* server and provide the URL to the server as `hangerUrl` option. 
+
+```javascript
+const runner = new BrythonRunner({
+    hangerUrl: 'https://www.pythonpad.co/hanger',
+});
+```
+
+An *aiohttp*-based implementation of a *hanger* server is available in this repository: [Brython Runner StdIn Hanger](https://github.com/pythonpad/brython-runner-stdin-hanger).
+Go check out detailed information on how standard input works in the Brython Runner.
 
 ### Files
 

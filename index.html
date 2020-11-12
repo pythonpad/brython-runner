@@ -16,9 +16,6 @@
             <button class="toolbar-button" onclick="run()">
                 Run
             </button>
-            <!-- <button class="toolbar-button" onclick="runUrl()">
-                Run URL
-            </button> -->
         </div>
         <div class="workspace-row">
             <div class="editor-column">
@@ -65,43 +62,48 @@
             localStorage.setItem(codeStoreKey, editor.getDoc().getValue())
         })
         const runner = new BrythonRunner({
-            staticUrl: '/static',
-            hangerUrl: null,
-            cwdUrl: '/static/brython_test',
             stdout: {
                 write(content) {
-                    var el = document.createElement('code');
-                    var text = document.createTextNode(content);
+                    var el = document.createElement('code')
+                    var text = document.createTextNode(content)
                     el.appendChild(text)
-                    document.getElementById('output').appendChild(el);  
+                    document.getElementById('output').appendChild(el)  
                 },
                 flush() { }
             },
             stderr: {
                 write(content) {
-                    var el = document.createElement('code');
-                    var text = document.createTextNode(content);
+                    var el = document.createElement('code')
+                    var text = document.createTextNode(content)
                     el.appendChild(text)
                     el.setAttribute('class', 'error')
-                    document.getElementById('output').appendChild(el);
+                    document.getElementById('output').appendChild(el)
                 },
                 flush() { }
             },
+            stdin: {
+                async readline() {
+                    var data = prompt()
+                    
+                    var el = document.createElement('code')
+                    var text = document.createTextNode(data + '\n')
+                    el.appendChild(text)
+                    document.getElementById('output').appendChild(el)  
+
+                    return data
+                },
+            }
         })
         function clearOutput() {
             document.getElementById('output').innerHTML = ''
         }
         function getCode() {
-            return editor.getDoc().getValue();
+            return editor.getDoc().getValue()
         }
         function run() {
             clearOutput()
-            const code = getCode();
-            runner.runCode(code);
-        }
-        function runUrl() {
-            clearOutput()
-            runner.runUrl('/static/brython_test/test.py');
+            const code = getCode()
+            runner.runCode(code)
         }
     </script>
     </body>

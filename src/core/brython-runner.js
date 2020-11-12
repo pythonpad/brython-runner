@@ -8,8 +8,8 @@ import fileioSrc from '!!raw-loader!../scripts/fileio.py'
 const DEFAULT_PARAMS = {
     codeName: 'main.py',
     codeCwd: '.',
-    staticUrl: null, //'/static',
-    hangerUrl: null, //'/hanger',
+    staticUrl: null,
+    hangerUrl: 'https://www.pythonpad.co/hanger',
     paths: [],
     postInitModules: [],
     postInitScripts: [],
