@@ -3,7 +3,10 @@ import io
 import os
 
 def set_files_from_obj():
-    browser.self._brFiles = browser.self._brFilesObj.to_dict()
+    try:
+        browser.self._brFiles = browser.self._brFilesObj.to_dict()
+    except AttributeError:
+        pass
 set_files_from_obj()
 browser.self._brSetFilesFromObj = set_files_from_obj
 
