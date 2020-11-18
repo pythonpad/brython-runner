@@ -1,6 +1,6 @@
 {
   "name": "brython-runner",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "Brython based Python code runner for web clients.",
   "main": "index.js",
   "repository": {
