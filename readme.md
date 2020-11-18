@@ -184,7 +184,7 @@ const runner = new BrythonRunner({
         files[filename].body = data.body;
     },
 });
-runner.runCodeWithFiles(files['main.py'], files);
+runner.runCodeWithFiles(files['main.py'].body, files);
 ```
 
 `BrythonRunner.runCodeWithFiles(code, files)` method runs Python `code` with given `files`. Files must be provided as a JavaScript object that contains each file or directory as a key-value pair. 
