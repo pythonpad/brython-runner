@@ -21,7 +21,12 @@ gulp.task('build-webpack', callback => {
 });
 
 gulp.task('compile-js-babel', () => {
-    return gulp.src(['src/**/*', '!src/**/*.py', '!src/browser.js'])
+    return gulp.src([
+      'src/**/*',
+      '!src/**/*.py',
+      '!src/core/brython-runner.worker.js',
+      '!src/browser.js',
+    ])
         .pipe(babel())
         .pipe(gulp.dest('lib'));
 });
