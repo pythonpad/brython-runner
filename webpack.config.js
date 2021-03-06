@@ -6,6 +6,7 @@ module.exports = mode => ({
     mode: 'development',
     entry: {
         'brython-runner.bundle': mode === 'development' ? ['babel-polyfill', './src/browser.js'] : ['./src/browser.js'],
+        'core/brython-runner.worker': mode === 'development' ? ['babel-polyfill', './src/core/brython-runner.worker.js'] : ['./src/core/brython-runner.worker.js'],
     },
     output: {
         path: path.join(__dirname, 'lib'),
